@@ -1,0 +1,22 @@
+<Define Namespace = "Sequence">
+    <!-- 序列 -->	 
+	<Class Name = "Sequence" Index = "Name" DataPath = "Sequence">  
+		<Field Name = "Name" Type = "string" Des = "序列名称" />
+        <Field Name = "Speed" Type = "float" Des = "序列速度">
+        <Field Name = "Tracks" Type = "list:Track" Des = "时间事件列表" />
+    </Class>
+
+    <Class Name = "Track">
+        <Field Name = "Name" Type = "string" Des = "剪辑名称"/>	 
+        <Field Name = "Clips" Type = "list:Clip" Des = "剪辑列表"/>
+    </Class>
+
+    <Class Name = "Clip">
+        <Field Name = "Name" Type = "string" Des = "剪辑名称"/>
+        <Field Name = "Start" Type = "float" Des = "起始时刻" />
+		<Field Name = "End" Type = "float" Des = "结束时刻" />
+    </Class>
+
+    <!-- 功能 -->
+
+</Define>

@@ -1,0 +1,95 @@
+<Define Namespace = "Ability">
+    <Class Name = "Ability"  Index = "Name" DataPath="Config">
+        <Field Name = "Name" Value = "string" Des = "技能名称" />
+        <Field Name = "BaseClass" Value = "string" Des = "继承类型,默认ability(基类)" />
+        <Field Name = "Behavior" Value = "BehaviorType" Des = "技能行为类型,定义了技能的释放形式;可用|组合多个类型" />
+        <Field Name = "ClipPoint" Value = "float" Des = "技能触发时间点,AnimationClip时间点" />
+        <Field Name = "ClipName" Value = "string" Des = "动作剪辑文件名称,当能力绑定到其他角色时,检查角色是否包含动作" />
+        <Field Name = "ClipSpeed" Value = "float" Des = "剪辑播放速度" />
+        <Field Name = "AoERadius" Value = "float" Des = "技能释放半径" />
+        <Field Name = "AttackRange" Value = "float" Des = "显示能力可作用范围" />
+        <Field Name = "Cooldown" Value = "float" Des = "冷却时间" />
+        <Field Name = "ManaCost" Value = "float" Des = "魔力消耗" />
+        <Field Name = "Duration" Value = "float" Des = "持续时间" />
+        <Field Name = "SpecialArgs" Value = "list:SpecialArg" Des = "变量列表,可指定常量,也可指定变量引用Excel,使用'Table.'替换'%'索引数据" />
+        <Field Name = "Events" Value = "list:string" Des = "基础事件列表" />
+        <Field Name = "Modifys" Value = "list:string" Des = "修饰器列表,可定义多个修饰器" />
+    </Class>
+
+    <Class Name = "SpecialArg">
+        <Field Name = "Name" Value = "string" Des = "变量名称" />
+    </Class>
+    <Class Name = "SpecialInt" Inherit= "SpecialArg">
+        <Field Name = "Value" Value = "int" Des = "int数据" />
+    </Class>
+    <Class Name = "SpecialFloat" Inherit= "SpecialArg">
+        <Field Name = "Value" Value = "float" Des = "float数据" />
+    </Class>
+    <Class Name = "SpecialString" Inherit= "SpecialArg">
+        <Field Name = "Value" Value = "string" Des = "string数据" />
+    </Class>
+     <Class Name = "SpecialBool" Inherit= "SpecialArg">
+        <Field Name = "Value" Value = "bool" Des = "bool数据" />
+    </Class>
+    <Class Name = "SpecialEXInt" Inherit= "SpecialArg">
+        <Field Name = "Value" Value = "int" Des = "Excel int数据" />
+    </Class>
+    <Class Name = "SpecialEXFloat" Inherit= "SpecialArg">
+        <Field Name = "Value" Value = "float" Des = "Excel float数据" />
+    </Class>
+    
+    <Class Name = "Target">
+        <Field Name = "Target" Value = "TargetType" Des = "目标中心" />
+        <Field Name = "Teams" Value = "Team" Des = "筛选队伍类型" />
+        <Field Name = "Types" Value = "Type" Des = "筛选目标类型" />
+        <Field Name = "Flags" Value = "Flag" Des = "标签目标类型" />
+    </Class>
+     <Class Name = "MultiTarget" Inherit= "SpecialArg">
+        <Field Name = "Radius" Value = "float" Des = "半径" />
+        <Field Name = "MaxTargets" Value = "int" Des = "最大目标数量" />
+    </Class>
+    
+    <Enum Name="TargetType">
+        <Const Name = "CASTER " Value = "0" Des = "施法者" />
+        <Const Name = "TARGET " Value = "1" Des = "目标" />
+        <Const Name = "POINT " Value = "2" Des = "点" />
+        <Const Name = "ATTACKER " Value = "3" Des = "攻击者" />
+        <Const Name = "UNIT " Value = "4" Des = "单位 " />
+        <Const Name = "PROJECTILE " Value = "5" Des = "抛射物 " />
+    </Enum>
+    <Enum Name="UnitTeam">
+        <Const Name = "UNIT_TEAM_NONE " Value = "1" Des = "无 " />
+        <Const Name = "UNIT_TEAM_BOTH " Value = "2" Des = "双方队伍" />
+        <Const Name = "UNIT_TEAM_CUSTOM " Value = "4" Des = "普通队伍" />
+        <Const Name = "UNIT_TEAM_ENEMY " Value = "8" Des = "敌方队伍" />
+        <Const Name = "UNIT_TEAM_FRIENDLY " Value = "16" Des = "友方队伍" />
+    </Enum>
+    <Enum Name="UnitType">
+        <Const Name = "UNIT_TYPE_NONE " Value = "1" Des = "无" />
+        <Const Name = "UNIT_TYPE_BUILDING " Value = "2" Des = "建筑" />
+        <Const Name = "UNIT_TYPE_CREEP " Value = "4" Des = "野怪" />
+        <Const Name = "UNIT_TYPE_HERO " Value = "8" Des = "英雄" />
+        <Const Name = "UNIT_TYPE_OTHER " Value = "16" Des = "其他" />
+        <Const Name = "UNIT_TYPE_ALL " Value = "32" Des = "所有" />
+    </Enum>
+    <Enum Name = "UnitFlag">
+        <Const Name = "UNIT_FLAG_NONE " Value = "1" Des = "无" />
+        <Const Name = "UNIT_FLAG_DEAD " Value = "2" Des = "已死亡" />
+        <Const Name = "UNIT_FLAG_INVULNERABLE " Value = "4" Des = "无敌" />
+        <Const Name = "UNIT_FLAG_NO_INVIS " Value = "8" Des = "不是隐形的" />
+        <Const Name = "UNIT_FLAG_NOT_ATTACK_IMMUNE " Value = "16" Des = "不是攻击免疫" />
+        <Const Name = "UNIT_FLAG_NOT_CREEP_HERO " Value = "32" Des = "不是野怪" />
+        <Const Name = "UNIT_FLAG_NOT_DOMINATED " Value = "64" Des = "不可控制的" />
+        <Const Name = "UNIT_FLAG_NOT_SUMMONED " Value = "128" Des = "非召唤的" />
+        <Const Name = "UNIT_FLAG_PLAYER_CONTROLLED " Value = "256" Des = "玩家控制的" />
+    </Enum>
+
+    <Enum Name="BehaviorType">
+        <Const Name = "ABILITY_BEHAVIOR_PASSIVE" Value = "0" Des = "被动技能，不能被使用，但是会在HUD上显示" />
+        <Const Name = "ABILITY_BEHAVIOR_UNIT_TARGET" Value = "1" Des = "需要指定一个目标来释放" />
+        <Const Name = "ABILITY_BEHAVIOR_NO_TARGET" Value = "2" Des = "不需要指定目标就能释放的技能，当按下技能按钮的时候，这个技能就会被释放" />
+        <Const Name = "ABILITY_BEHAVIOR_CHANNELLED" Value = "3" Des = "持续性施法技能" />
+        <Const Name = "ABILITY_BEHAVIOR_POINT" Value = "4" Des = "技能将会在鼠标指定的位置释放" />
+        <Const Name = "ABILITY_BEHAVIOR_AOE" Value = "5" Des = "范围型技能,将会显示技能释放的范围" />
+    </Enum>
+</Define>

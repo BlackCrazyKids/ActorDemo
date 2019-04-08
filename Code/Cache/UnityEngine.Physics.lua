@@ -1,0 +1,356 @@
+---@field public IgnoreRaycastLayer System.Int32
+---@field public DefaultRaycastLayers System.Int32
+---@field public AllLayers System.Int32
+---@field public kIgnoreRaycastLayer System.Int32
+---@field public kDefaultRaycastLayers System.Int32
+---@field public kAllLayers System.Int32
+---@field public minPenetrationForPenalty System.Single
+---@field public gravity UnityEngine.Vector3
+---@field public defaultContactOffset System.Single
+---@field public sleepThreshold System.Single
+---@field public queriesHitTriggers System.Boolean
+---@field public queriesHitBackfaces System.Boolean
+---@field public bounceThreshold System.Single
+---@field public defaultSolverIterations System.Int32
+---@field public defaultSolverVelocityIterations System.Int32
+---@field public bounceTreshold System.Single
+---@field public sleepVelocity System.Single
+---@field public sleepAngularVelocity System.Single
+---@field public maxAngularVelocity System.Single
+---@field public solverIterationCount System.Int32
+---@field public solverVelocityIterationCount System.Int32
+---@field public penetrationPenaltyForce System.Single
+---@field public autoSimulation System.Boolean
+---@field public autoSyncTransforms System.Boolean
+---@field public interCollisionDistance System.Single
+---@field public interCollisionStiffness System.Single
+---@field public interCollisionSettingsToggle System.Boolean
+---@class UnityEngine.Physics : System.Object
+local m = {}
+
+---@overload fun(collider1 : UnityEngine.Collider,collider2 : UnityEngine.Collider,ignore : System.Boolean) : System.Void
+---@param collider1 UnityEngine.Collider
+---@param collider2 UnityEngine.Collider
+---@param ignore System.Boolean
+---@return System.Void
+function m.IgnoreCollision(collider1,collider2,ignore)end
+---@overload fun(layer1 : System.Int32,layer2 : System.Int32,ignore : System.Boolean) : System.Void
+---@param layer1 System.Int32
+---@param layer2 System.Int32
+---@param ignore System.Boolean
+---@return System.Void
+function m.IgnoreLayerCollision(layer1,layer2,ignore)end
+---@param layer1 System.Int32
+---@param layer2 System.Int32
+---@return System.Boolean
+function m.GetIgnoreLayerCollision(layer1,layer2)end
+---@overload fun(origin : UnityEngine.Vector3,direction : UnityEngine.Vector3,maxDistance : System.Single,layerMask : System.Int32,queryTriggerInteraction : UnityEngine.QueryTriggerInteraction) : System.Boolean
+---@overload fun(origin : UnityEngine.Vector3,direction : UnityEngine.Vector3,maxDistance : System.Single,layerMask : System.Int32,queryTriggerInteraction : UnityEngine.QueryTriggerInteraction) : System.Boolean
+---@overload fun(origin : UnityEngine.Vector3,direction : UnityEngine.Vector3,maxDistance : System.Single,layerMask : System.Int32,queryTriggerInteraction : UnityEngine.QueryTriggerInteraction) : System.Boolean
+---@overload fun(origin : UnityEngine.Vector3,direction : UnityEngine.Vector3,maxDistance : System.Single,layerMask : System.Int32,queryTriggerInteraction : UnityEngine.QueryTriggerInteraction) : System.Boolean
+---@overload fun(origin : UnityEngine.Vector3,direction : UnityEngine.Vector3,maxDistance : System.Single,layerMask : System.Int32,queryTriggerInteraction : UnityEngine.QueryTriggerInteraction) : System.Boolean
+---@overload fun(origin : UnityEngine.Vector3,direction : UnityEngine.Vector3,maxDistance : System.Single,layerMask : System.Int32,queryTriggerInteraction : UnityEngine.QueryTriggerInteraction) : System.Boolean
+---@overload fun(origin : UnityEngine.Vector3,direction : UnityEngine.Vector3,maxDistance : System.Single,layerMask : System.Int32,queryTriggerInteraction : UnityEngine.QueryTriggerInteraction) : System.Boolean
+---@overload fun(origin : UnityEngine.Vector3,direction : UnityEngine.Vector3,maxDistance : System.Single,layerMask : System.Int32,queryTriggerInteraction : UnityEngine.QueryTriggerInteraction) : System.Boolean
+---@overload fun(origin : UnityEngine.Vector3,direction : UnityEngine.Vector3,maxDistance : System.Single,layerMask : System.Int32,queryTriggerInteraction : UnityEngine.QueryTriggerInteraction) : System.Boolean
+---@overload fun(origin : UnityEngine.Vector3,direction : UnityEngine.Vector3,maxDistance : System.Single,layerMask : System.Int32,queryTriggerInteraction : UnityEngine.QueryTriggerInteraction) : System.Boolean
+---@overload fun(origin : UnityEngine.Vector3,direction : UnityEngine.Vector3,maxDistance : System.Single,layerMask : System.Int32,queryTriggerInteraction : UnityEngine.QueryTriggerInteraction) : System.Boolean
+---@overload fun(origin : UnityEngine.Vector3,direction : UnityEngine.Vector3,maxDistance : System.Single,layerMask : System.Int32,queryTriggerInteraction : UnityEngine.QueryTriggerInteraction) : System.Boolean
+---@overload fun(origin : UnityEngine.Vector3,direction : UnityEngine.Vector3,maxDistance : System.Single,layerMask : System.Int32,queryTriggerInteraction : UnityEngine.QueryTriggerInteraction) : System.Boolean
+---@overload fun(origin : UnityEngine.Vector3,direction : UnityEngine.Vector3,maxDistance : System.Single,layerMask : System.Int32,queryTriggerInteraction : UnityEngine.QueryTriggerInteraction) : System.Boolean
+---@overload fun(origin : UnityEngine.Vector3,direction : UnityEngine.Vector3,maxDistance : System.Single,layerMask : System.Int32,queryTriggerInteraction : UnityEngine.QueryTriggerInteraction) : System.Boolean
+---@param origin UnityEngine.Vector3
+---@param direction UnityEngine.Vector3
+---@param maxDistance System.Single
+---@param layerMask System.Int32
+---@param queryTriggerInteraction UnityEngine.QueryTriggerInteraction
+---@return System.Boolean
+function m.Raycast(origin,direction,maxDistance,layerMask,queryTriggerInteraction)end
+---@overload fun(start : UnityEngine.Vector3,end : UnityEngine.Vector3,layerMask : System.Int32,queryTriggerInteraction : UnityEngine.QueryTriggerInteraction) : System.Boolean
+---@overload fun(start : UnityEngine.Vector3,end : UnityEngine.Vector3,layerMask : System.Int32,queryTriggerInteraction : UnityEngine.QueryTriggerInteraction) : System.Boolean
+---@overload fun(start : UnityEngine.Vector3,end : UnityEngine.Vector3,layerMask : System.Int32,queryTriggerInteraction : UnityEngine.QueryTriggerInteraction) : System.Boolean
+---@overload fun(start : UnityEngine.Vector3,end : UnityEngine.Vector3,layerMask : System.Int32,queryTriggerInteraction : UnityEngine.QueryTriggerInteraction) : System.Boolean
+---@overload fun(start : UnityEngine.Vector3,end : UnityEngine.Vector3,layerMask : System.Int32,queryTriggerInteraction : UnityEngine.QueryTriggerInteraction) : System.Boolean
+---@param start UnityEngine.Vector3
+---@param end UnityEngine.Vector3
+---@param layerMask System.Int32
+---@param queryTriggerInteraction UnityEngine.QueryTriggerInteraction
+---@return System.Boolean
+function m.Linecast(start,end,layerMask,queryTriggerInteraction)end
+---@overload fun(point1 : UnityEngine.Vector3,point2 : UnityEngine.Vector3,radius : System.Single,direction : UnityEngine.Vector3,maxDistance : System.Single,layerMask : System.Int32,queryTriggerInteraction : UnityEngine.QueryTriggerInteraction) : System.Boolean
+---@overload fun(point1 : UnityEngine.Vector3,point2 : UnityEngine.Vector3,radius : System.Single,direction : UnityEngine.Vector3,maxDistance : System.Single,layerMask : System.Int32,queryTriggerInteraction : UnityEngine.QueryTriggerInteraction) : System.Boolean
+---@overload fun(point1 : UnityEngine.Vector3,point2 : UnityEngine.Vector3,radius : System.Single,direction : UnityEngine.Vector3,maxDistance : System.Single,layerMask : System.Int32,queryTriggerInteraction : UnityEngine.QueryTriggerInteraction) : System.Boolean
+---@overload fun(point1 : UnityEngine.Vector3,point2 : UnityEngine.Vector3,radius : System.Single,direction : UnityEngine.Vector3,maxDistance : System.Single,layerMask : System.Int32,queryTriggerInteraction : UnityEngine.QueryTriggerInteraction) : System.Boolean
+---@overload fun(point1 : UnityEngine.Vector3,point2 : UnityEngine.Vector3,radius : System.Single,direction : UnityEngine.Vector3,maxDistance : System.Single,layerMask : System.Int32,queryTriggerInteraction : UnityEngine.QueryTriggerInteraction) : System.Boolean
+---@overload fun(point1 : UnityEngine.Vector3,point2 : UnityEngine.Vector3,radius : System.Single,direction : UnityEngine.Vector3,maxDistance : System.Single,layerMask : System.Int32,queryTriggerInteraction : UnityEngine.QueryTriggerInteraction) : System.Boolean
+---@overload fun(point1 : UnityEngine.Vector3,point2 : UnityEngine.Vector3,radius : System.Single,direction : UnityEngine.Vector3,maxDistance : System.Single,layerMask : System.Int32,queryTriggerInteraction : UnityEngine.QueryTriggerInteraction) : System.Boolean
+---@param point1 UnityEngine.Vector3
+---@param point2 UnityEngine.Vector3
+---@param radius System.Single
+---@param direction UnityEngine.Vector3
+---@param maxDistance System.Single
+---@param layerMask System.Int32
+---@param queryTriggerInteraction UnityEngine.QueryTriggerInteraction
+---@return System.Boolean
+function m.CapsuleCast(point1,point2,radius,direction,maxDistance,layerMask,queryTriggerInteraction)end
+---@overload fun(origin : UnityEngine.Vector3,radius : System.Single,direction : UnityEngine.Vector3,hitInfo : UnityEngine.RaycastHit&,maxDistance : System.Single,layerMask : System.Int32,queryTriggerInteraction : UnityEngine.QueryTriggerInteraction) : System.Boolean
+---@overload fun(origin : UnityEngine.Vector3,radius : System.Single,direction : UnityEngine.Vector3,hitInfo : UnityEngine.RaycastHit&,maxDistance : System.Single,layerMask : System.Int32,queryTriggerInteraction : UnityEngine.QueryTriggerInteraction) : System.Boolean
+---@overload fun(origin : UnityEngine.Vector3,radius : System.Single,direction : UnityEngine.Vector3,hitInfo : UnityEngine.RaycastHit&,maxDistance : System.Single,layerMask : System.Int32,queryTriggerInteraction : UnityEngine.QueryTriggerInteraction) : System.Boolean
+---@overload fun(origin : UnityEngine.Vector3,radius : System.Single,direction : UnityEngine.Vector3,hitInfo : UnityEngine.RaycastHit&,maxDistance : System.Single,layerMask : System.Int32,queryTriggerInteraction : UnityEngine.QueryTriggerInteraction) : System.Boolean
+---@overload fun(origin : UnityEngine.Vector3,radius : System.Single,direction : UnityEngine.Vector3,hitInfo : UnityEngine.RaycastHit&,maxDistance : System.Single,layerMask : System.Int32,queryTriggerInteraction : UnityEngine.QueryTriggerInteraction) : System.Boolean
+---@overload fun(origin : UnityEngine.Vector3,radius : System.Single,direction : UnityEngine.Vector3,hitInfo : UnityEngine.RaycastHit&,maxDistance : System.Single,layerMask : System.Int32,queryTriggerInteraction : UnityEngine.QueryTriggerInteraction) : System.Boolean
+---@overload fun(origin : UnityEngine.Vector3,radius : System.Single,direction : UnityEngine.Vector3,hitInfo : UnityEngine.RaycastHit&,maxDistance : System.Single,layerMask : System.Int32,queryTriggerInteraction : UnityEngine.QueryTriggerInteraction) : System.Boolean
+---@overload fun(origin : UnityEngine.Vector3,radius : System.Single,direction : UnityEngine.Vector3,hitInfo : UnityEngine.RaycastHit&,maxDistance : System.Single,layerMask : System.Int32,queryTriggerInteraction : UnityEngine.QueryTriggerInteraction) : System.Boolean
+---@overload fun(origin : UnityEngine.Vector3,radius : System.Single,direction : UnityEngine.Vector3,hitInfo : UnityEngine.RaycastHit&,maxDistance : System.Single,layerMask : System.Int32,queryTriggerInteraction : UnityEngine.QueryTriggerInteraction) : System.Boolean
+---@overload fun(origin : UnityEngine.Vector3,radius : System.Single,direction : UnityEngine.Vector3,hitInfo : UnityEngine.RaycastHit&,maxDistance : System.Single,layerMask : System.Int32,queryTriggerInteraction : UnityEngine.QueryTriggerInteraction) : System.Boolean
+---@overload fun(origin : UnityEngine.Vector3,radius : System.Single,direction : UnityEngine.Vector3,hitInfo : UnityEngine.RaycastHit&,maxDistance : System.Single,layerMask : System.Int32,queryTriggerInteraction : UnityEngine.QueryTriggerInteraction) : System.Boolean
+---@param origin UnityEngine.Vector3
+---@param radius System.Single
+---@param direction UnityEngine.Vector3
+---@param hitInfo UnityEngine.RaycastHit&
+---@param maxDistance System.Single
+---@param layerMask System.Int32
+---@param queryTriggerInteraction UnityEngine.QueryTriggerInteraction
+---@return System.Boolean
+function m.SphereCast(origin,radius,direction,hitInfo,maxDistance,layerMask,queryTriggerInteraction)end
+---@overload fun(center : UnityEngine.Vector3,halfExtents : UnityEngine.Vector3,direction : UnityEngine.Vector3,orientation : UnityEngine.Quaternion,maxDistance : System.Single,layerMask : System.Int32,queryTriggerInteraction : UnityEngine.QueryTriggerInteraction) : System.Boolean
+---@overload fun(center : UnityEngine.Vector3,halfExtents : UnityEngine.Vector3,direction : UnityEngine.Vector3,orientation : UnityEngine.Quaternion,maxDistance : System.Single,layerMask : System.Int32,queryTriggerInteraction : UnityEngine.QueryTriggerInteraction) : System.Boolean
+---@overload fun(center : UnityEngine.Vector3,halfExtents : UnityEngine.Vector3,direction : UnityEngine.Vector3,orientation : UnityEngine.Quaternion,maxDistance : System.Single,layerMask : System.Int32,queryTriggerInteraction : UnityEngine.QueryTriggerInteraction) : System.Boolean
+---@overload fun(center : UnityEngine.Vector3,halfExtents : UnityEngine.Vector3,direction : UnityEngine.Vector3,orientation : UnityEngine.Quaternion,maxDistance : System.Single,layerMask : System.Int32,queryTriggerInteraction : UnityEngine.QueryTriggerInteraction) : System.Boolean
+---@overload fun(center : UnityEngine.Vector3,halfExtents : UnityEngine.Vector3,direction : UnityEngine.Vector3,orientation : UnityEngine.Quaternion,maxDistance : System.Single,layerMask : System.Int32,queryTriggerInteraction : UnityEngine.QueryTriggerInteraction) : System.Boolean
+---@overload fun(center : UnityEngine.Vector3,halfExtents : UnityEngine.Vector3,direction : UnityEngine.Vector3,orientation : UnityEngine.Quaternion,maxDistance : System.Single,layerMask : System.Int32,queryTriggerInteraction : UnityEngine.QueryTriggerInteraction) : System.Boolean
+---@overload fun(center : UnityEngine.Vector3,halfExtents : UnityEngine.Vector3,direction : UnityEngine.Vector3,orientation : UnityEngine.Quaternion,maxDistance : System.Single,layerMask : System.Int32,queryTriggerInteraction : UnityEngine.QueryTriggerInteraction) : System.Boolean
+---@overload fun(center : UnityEngine.Vector3,halfExtents : UnityEngine.Vector3,direction : UnityEngine.Vector3,orientation : UnityEngine.Quaternion,maxDistance : System.Single,layerMask : System.Int32,queryTriggerInteraction : UnityEngine.QueryTriggerInteraction) : System.Boolean
+---@overload fun(center : UnityEngine.Vector3,halfExtents : UnityEngine.Vector3,direction : UnityEngine.Vector3,orientation : UnityEngine.Quaternion,maxDistance : System.Single,layerMask : System.Int32,queryTriggerInteraction : UnityEngine.QueryTriggerInteraction) : System.Boolean
+---@param center UnityEngine.Vector3
+---@param halfExtents UnityEngine.Vector3
+---@param direction UnityEngine.Vector3
+---@param orientation UnityEngine.Quaternion
+---@param maxDistance System.Single
+---@param layerMask System.Int32
+---@param queryTriggerInteraction UnityEngine.QueryTriggerInteraction
+---@return System.Boolean
+function m.BoxCast(center,halfExtents,direction,orientation,maxDistance,layerMask,queryTriggerInteraction)end
+---@overload fun(origin : UnityEngine.Vector3,direction : UnityEngine.Vector3,maxDistance : System.Single,layerMask : System.Int32,queryTriggerInteraction : UnityEngine.QueryTriggerInteraction) : UnityEngine.RaycastHit[]
+---@overload fun(origin : UnityEngine.Vector3,direction : UnityEngine.Vector3,maxDistance : System.Single,layerMask : System.Int32,queryTriggerInteraction : UnityEngine.QueryTriggerInteraction) : UnityEngine.RaycastHit[]
+---@overload fun(origin : UnityEngine.Vector3,direction : UnityEngine.Vector3,maxDistance : System.Single,layerMask : System.Int32,queryTriggerInteraction : UnityEngine.QueryTriggerInteraction) : UnityEngine.RaycastHit[]
+---@overload fun(origin : UnityEngine.Vector3,direction : UnityEngine.Vector3,maxDistance : System.Single,layerMask : System.Int32,queryTriggerInteraction : UnityEngine.QueryTriggerInteraction) : UnityEngine.RaycastHit[]
+---@overload fun(origin : UnityEngine.Vector3,direction : UnityEngine.Vector3,maxDistance : System.Single,layerMask : System.Int32,queryTriggerInteraction : UnityEngine.QueryTriggerInteraction) : UnityEngine.RaycastHit[]
+---@overload fun(origin : UnityEngine.Vector3,direction : UnityEngine.Vector3,maxDistance : System.Single,layerMask : System.Int32,queryTriggerInteraction : UnityEngine.QueryTriggerInteraction) : UnityEngine.RaycastHit[]
+---@overload fun(origin : UnityEngine.Vector3,direction : UnityEngine.Vector3,maxDistance : System.Single,layerMask : System.Int32,queryTriggerInteraction : UnityEngine.QueryTriggerInteraction) : UnityEngine.RaycastHit[]
+---@param origin UnityEngine.Vector3
+---@param direction UnityEngine.Vector3
+---@param maxDistance System.Single
+---@param layerMask System.Int32
+---@param queryTriggerInteraction UnityEngine.QueryTriggerInteraction
+---@return UnityEngine.RaycastHit[]
+function m.RaycastAll(origin,direction,maxDistance,layerMask,queryTriggerInteraction)end
+---@overload fun(point1 : UnityEngine.Vector3,point2 : UnityEngine.Vector3,radius : System.Single,direction : UnityEngine.Vector3,maxDistance : System.Single,layerMask : System.Int32,queryTriggerInteraction : UnityEngine.QueryTriggerInteraction) : UnityEngine.RaycastHit[]
+---@overload fun(point1 : UnityEngine.Vector3,point2 : UnityEngine.Vector3,radius : System.Single,direction : UnityEngine.Vector3,maxDistance : System.Single,layerMask : System.Int32,queryTriggerInteraction : UnityEngine.QueryTriggerInteraction) : UnityEngine.RaycastHit[]
+---@overload fun(point1 : UnityEngine.Vector3,point2 : UnityEngine.Vector3,radius : System.Single,direction : UnityEngine.Vector3,maxDistance : System.Single,layerMask : System.Int32,queryTriggerInteraction : UnityEngine.QueryTriggerInteraction) : UnityEngine.RaycastHit[]
+---@param point1 UnityEngine.Vector3
+---@param point2 UnityEngine.Vector3
+---@param radius System.Single
+---@param direction UnityEngine.Vector3
+---@param maxDistance System.Single
+---@param layerMask System.Int32
+---@param queryTriggerInteraction UnityEngine.QueryTriggerInteraction
+---@return UnityEngine.RaycastHit[]
+function m.CapsuleCastAll(point1,point2,radius,direction,maxDistance,layerMask,queryTriggerInteraction)end
+---@overload fun(origin : UnityEngine.Vector3,radius : System.Single,direction : UnityEngine.Vector3,maxDistance : System.Single,layerMask : System.Int32,queryTriggerInteraction : UnityEngine.QueryTriggerInteraction) : UnityEngine.RaycastHit[]
+---@overload fun(origin : UnityEngine.Vector3,radius : System.Single,direction : UnityEngine.Vector3,maxDistance : System.Single,layerMask : System.Int32,queryTriggerInteraction : UnityEngine.QueryTriggerInteraction) : UnityEngine.RaycastHit[]
+---@overload fun(origin : UnityEngine.Vector3,radius : System.Single,direction : UnityEngine.Vector3,maxDistance : System.Single,layerMask : System.Int32,queryTriggerInteraction : UnityEngine.QueryTriggerInteraction) : UnityEngine.RaycastHit[]
+---@overload fun(origin : UnityEngine.Vector3,radius : System.Single,direction : UnityEngine.Vector3,maxDistance : System.Single,layerMask : System.Int32,queryTriggerInteraction : UnityEngine.QueryTriggerInteraction) : UnityEngine.RaycastHit[]
+---@overload fun(origin : UnityEngine.Vector3,radius : System.Single,direction : UnityEngine.Vector3,maxDistance : System.Single,layerMask : System.Int32,queryTriggerInteraction : UnityEngine.QueryTriggerInteraction) : UnityEngine.RaycastHit[]
+---@overload fun(origin : UnityEngine.Vector3,radius : System.Single,direction : UnityEngine.Vector3,maxDistance : System.Single,layerMask : System.Int32,queryTriggerInteraction : UnityEngine.QueryTriggerInteraction) : UnityEngine.RaycastHit[]
+---@overload fun(origin : UnityEngine.Vector3,radius : System.Single,direction : UnityEngine.Vector3,maxDistance : System.Single,layerMask : System.Int32,queryTriggerInteraction : UnityEngine.QueryTriggerInteraction) : UnityEngine.RaycastHit[]
+---@param origin UnityEngine.Vector3
+---@param radius System.Single
+---@param direction UnityEngine.Vector3
+---@param maxDistance System.Single
+---@param layerMask System.Int32
+---@param queryTriggerInteraction UnityEngine.QueryTriggerInteraction
+---@return UnityEngine.RaycastHit[]
+function m.SphereCastAll(origin,radius,direction,maxDistance,layerMask,queryTriggerInteraction)end
+---@overload fun(point0 : UnityEngine.Vector3,point1 : UnityEngine.Vector3,radius : System.Single,layerMask : System.Int32,queryTriggerInteraction : UnityEngine.QueryTriggerInteraction) : UnityEngine.Collider[]
+---@overload fun(point0 : UnityEngine.Vector3,point1 : UnityEngine.Vector3,radius : System.Single,layerMask : System.Int32,queryTriggerInteraction : UnityEngine.QueryTriggerInteraction) : UnityEngine.Collider[]
+---@param point0 UnityEngine.Vector3
+---@param point1 UnityEngine.Vector3
+---@param radius System.Single
+---@param layerMask System.Int32
+---@param queryTriggerInteraction UnityEngine.QueryTriggerInteraction
+---@return UnityEngine.Collider[]
+function m.OverlapCapsule(point0,point1,radius,layerMask,queryTriggerInteraction)end
+---@overload fun(position : UnityEngine.Vector3,radius : System.Single,layerMask : System.Int32,queryTriggerInteraction : UnityEngine.QueryTriggerInteraction) : UnityEngine.Collider[]
+---@overload fun(position : UnityEngine.Vector3,radius : System.Single,layerMask : System.Int32,queryTriggerInteraction : UnityEngine.QueryTriggerInteraction) : UnityEngine.Collider[]
+---@param position UnityEngine.Vector3
+---@param radius System.Single
+---@param layerMask System.Int32
+---@param queryTriggerInteraction UnityEngine.QueryTriggerInteraction
+---@return UnityEngine.Collider[]
+function m.OverlapSphere(position,radius,layerMask,queryTriggerInteraction)end
+---@param step System.Single
+---@return System.Void
+function m.Simulate(step)end
+---@return System.Void
+function m.SyncTransforms()end
+---@param colliderA UnityEngine.Collider
+---@param positionA UnityEngine.Vector3
+---@param rotationA UnityEngine.Quaternion
+---@param colliderB UnityEngine.Collider
+---@param positionB UnityEngine.Vector3
+---@param rotationB UnityEngine.Quaternion
+---@param direction UnityEngine.Vector3&
+---@param distance System.Single&
+---@return System.Boolean
+function m.ComputePenetration(colliderA,positionA,rotationA,colliderB,positionB,rotationB,direction,distance)end
+---@param point UnityEngine.Vector3
+---@param collider UnityEngine.Collider
+---@param position UnityEngine.Vector3
+---@param rotation UnityEngine.Quaternion
+---@return UnityEngine.Vector3
+function m.ClosestPoint(point,collider,position,rotation)end
+---@overload fun(ray : UnityEngine.Ray,results : UnityEngine.RaycastHit[],maxDistance : System.Single,layerMask : System.Int32,queryTriggerInteraction : UnityEngine.QueryTriggerInteraction) : System.Int32
+---@overload fun(ray : UnityEngine.Ray,results : UnityEngine.RaycastHit[],maxDistance : System.Single,layerMask : System.Int32,queryTriggerInteraction : UnityEngine.QueryTriggerInteraction) : System.Int32
+---@overload fun(ray : UnityEngine.Ray,results : UnityEngine.RaycastHit[],maxDistance : System.Single,layerMask : System.Int32,queryTriggerInteraction : UnityEngine.QueryTriggerInteraction) : System.Int32
+---@overload fun(ray : UnityEngine.Ray,results : UnityEngine.RaycastHit[],maxDistance : System.Single,layerMask : System.Int32,queryTriggerInteraction : UnityEngine.QueryTriggerInteraction) : System.Int32
+---@overload fun(ray : UnityEngine.Ray,results : UnityEngine.RaycastHit[],maxDistance : System.Single,layerMask : System.Int32,queryTriggerInteraction : UnityEngine.QueryTriggerInteraction) : System.Int32
+---@overload fun(ray : UnityEngine.Ray,results : UnityEngine.RaycastHit[],maxDistance : System.Single,layerMask : System.Int32,queryTriggerInteraction : UnityEngine.QueryTriggerInteraction) : System.Int32
+---@overload fun(ray : UnityEngine.Ray,results : UnityEngine.RaycastHit[],maxDistance : System.Single,layerMask : System.Int32,queryTriggerInteraction : UnityEngine.QueryTriggerInteraction) : System.Int32
+---@param ray UnityEngine.Ray
+---@param results UnityEngine.RaycastHit[]
+---@param maxDistance System.Single
+---@param layerMask System.Int32
+---@param queryTriggerInteraction UnityEngine.QueryTriggerInteraction
+---@return System.Int32
+function m.RaycastNonAlloc(ray,results,maxDistance,layerMask,queryTriggerInteraction)end
+---@overload fun(position : UnityEngine.Vector3,radius : System.Single,results : UnityEngine.Collider[],layerMask : System.Int32,queryTriggerInteraction : UnityEngine.QueryTriggerInteraction) : System.Int32
+---@overload fun(position : UnityEngine.Vector3,radius : System.Single,results : UnityEngine.Collider[],layerMask : System.Int32,queryTriggerInteraction : UnityEngine.QueryTriggerInteraction) : System.Int32
+---@param position UnityEngine.Vector3
+---@param radius System.Single
+---@param results UnityEngine.Collider[]
+---@param layerMask System.Int32
+---@param queryTriggerInteraction UnityEngine.QueryTriggerInteraction
+---@return System.Int32
+function m.OverlapSphereNonAlloc(position,radius,results,layerMask,queryTriggerInteraction)end
+---@overload fun(position : UnityEngine.Vector3,radius : System.Single,layerMask : System.Int32,queryTriggerInteraction : UnityEngine.QueryTriggerInteraction) : System.Boolean
+---@overload fun(position : UnityEngine.Vector3,radius : System.Single,layerMask : System.Int32,queryTriggerInteraction : UnityEngine.QueryTriggerInteraction) : System.Boolean
+---@param position UnityEngine.Vector3
+---@param radius System.Single
+---@param layerMask System.Int32
+---@param queryTriggerInteraction UnityEngine.QueryTriggerInteraction
+---@return System.Boolean
+function m.CheckSphere(position,radius,layerMask,queryTriggerInteraction)end
+---@overload fun(point1 : UnityEngine.Vector3,point2 : UnityEngine.Vector3,radius : System.Single,direction : UnityEngine.Vector3,results : UnityEngine.RaycastHit[],maxDistance : System.Single,layerMask : System.Int32,queryTriggerInteraction : UnityEngine.QueryTriggerInteraction) : System.Int32
+---@overload fun(point1 : UnityEngine.Vector3,point2 : UnityEngine.Vector3,radius : System.Single,direction : UnityEngine.Vector3,results : UnityEngine.RaycastHit[],maxDistance : System.Single,layerMask : System.Int32,queryTriggerInteraction : UnityEngine.QueryTriggerInteraction) : System.Int32
+---@overload fun(point1 : UnityEngine.Vector3,point2 : UnityEngine.Vector3,radius : System.Single,direction : UnityEngine.Vector3,results : UnityEngine.RaycastHit[],maxDistance : System.Single,layerMask : System.Int32,queryTriggerInteraction : UnityEngine.QueryTriggerInteraction) : System.Int32
+---@param point1 UnityEngine.Vector3
+---@param point2 UnityEngine.Vector3
+---@param radius System.Single
+---@param direction UnityEngine.Vector3
+---@param results UnityEngine.RaycastHit[]
+---@param maxDistance System.Single
+---@param layerMask System.Int32
+---@param queryTriggerInteraction UnityEngine.QueryTriggerInteraction
+---@return System.Int32
+function m.CapsuleCastNonAlloc(point1,point2,radius,direction,results,maxDistance,layerMask,queryTriggerInteraction)end
+---@overload fun(origin : UnityEngine.Vector3,radius : System.Single,direction : UnityEngine.Vector3,results : UnityEngine.RaycastHit[],maxDistance : System.Single,layerMask : System.Int32,queryTriggerInteraction : UnityEngine.QueryTriggerInteraction) : System.Int32
+---@overload fun(origin : UnityEngine.Vector3,radius : System.Single,direction : UnityEngine.Vector3,results : UnityEngine.RaycastHit[],maxDistance : System.Single,layerMask : System.Int32,queryTriggerInteraction : UnityEngine.QueryTriggerInteraction) : System.Int32
+---@overload fun(origin : UnityEngine.Vector3,radius : System.Single,direction : UnityEngine.Vector3,results : UnityEngine.RaycastHit[],maxDistance : System.Single,layerMask : System.Int32,queryTriggerInteraction : UnityEngine.QueryTriggerInteraction) : System.Int32
+---@overload fun(origin : UnityEngine.Vector3,radius : System.Single,direction : UnityEngine.Vector3,results : UnityEngine.RaycastHit[],maxDistance : System.Single,layerMask : System.Int32,queryTriggerInteraction : UnityEngine.QueryTriggerInteraction) : System.Int32
+---@overload fun(origin : UnityEngine.Vector3,radius : System.Single,direction : UnityEngine.Vector3,results : UnityEngine.RaycastHit[],maxDistance : System.Single,layerMask : System.Int32,queryTriggerInteraction : UnityEngine.QueryTriggerInteraction) : System.Int32
+---@overload fun(origin : UnityEngine.Vector3,radius : System.Single,direction : UnityEngine.Vector3,results : UnityEngine.RaycastHit[],maxDistance : System.Single,layerMask : System.Int32,queryTriggerInteraction : UnityEngine.QueryTriggerInteraction) : System.Int32
+---@overload fun(origin : UnityEngine.Vector3,radius : System.Single,direction : UnityEngine.Vector3,results : UnityEngine.RaycastHit[],maxDistance : System.Single,layerMask : System.Int32,queryTriggerInteraction : UnityEngine.QueryTriggerInteraction) : System.Int32
+---@param origin UnityEngine.Vector3
+---@param radius System.Single
+---@param direction UnityEngine.Vector3
+---@param results UnityEngine.RaycastHit[]
+---@param maxDistance System.Single
+---@param layerMask System.Int32
+---@param queryTriggerInteraction UnityEngine.QueryTriggerInteraction
+---@return System.Int32
+function m.SphereCastNonAlloc(origin,radius,direction,results,maxDistance,layerMask,queryTriggerInteraction)end
+---@overload fun(start : UnityEngine.Vector3,end : UnityEngine.Vector3,radius : System.Single,layerMask : System.Int32,queryTriggerInteraction : UnityEngine.QueryTriggerInteraction) : System.Boolean
+---@overload fun(start : UnityEngine.Vector3,end : UnityEngine.Vector3,radius : System.Single,layerMask : System.Int32,queryTriggerInteraction : UnityEngine.QueryTriggerInteraction) : System.Boolean
+---@param start UnityEngine.Vector3
+---@param end UnityEngine.Vector3
+---@param radius System.Single
+---@param layerMask System.Int32
+---@param queryTriggerInteraction UnityEngine.QueryTriggerInteraction
+---@return System.Boolean
+function m.CheckCapsule(start,end,radius,layerMask,queryTriggerInteraction)end
+---@overload fun(center : UnityEngine.Vector3,halfExtents : UnityEngine.Vector3,orientation : UnityEngine.Quaternion,layermask : System.Int32,queryTriggerInteraction : UnityEngine.QueryTriggerInteraction) : System.Boolean
+---@overload fun(center : UnityEngine.Vector3,halfExtents : UnityEngine.Vector3,orientation : UnityEngine.Quaternion,layermask : System.Int32,queryTriggerInteraction : UnityEngine.QueryTriggerInteraction) : System.Boolean
+---@overload fun(center : UnityEngine.Vector3,halfExtents : UnityEngine.Vector3,orientation : UnityEngine.Quaternion,layermask : System.Int32,queryTriggerInteraction : UnityEngine.QueryTriggerInteraction) : System.Boolean
+---@param center UnityEngine.Vector3
+---@param halfExtents UnityEngine.Vector3
+---@param orientation UnityEngine.Quaternion
+---@param layermask System.Int32
+---@param queryTriggerInteraction UnityEngine.QueryTriggerInteraction
+---@return System.Boolean
+function m.CheckBox(center,halfExtents,orientation,layermask,queryTriggerInteraction)end
+---@overload fun(center : UnityEngine.Vector3,halfExtents : UnityEngine.Vector3,orientation : UnityEngine.Quaternion,layerMask : System.Int32,queryTriggerInteraction : UnityEngine.QueryTriggerInteraction) : UnityEngine.Collider[]
+---@overload fun(center : UnityEngine.Vector3,halfExtents : UnityEngine.Vector3,orientation : UnityEngine.Quaternion,layerMask : System.Int32,queryTriggerInteraction : UnityEngine.QueryTriggerInteraction) : UnityEngine.Collider[]
+---@overload fun(center : UnityEngine.Vector3,halfExtents : UnityEngine.Vector3,orientation : UnityEngine.Quaternion,layerMask : System.Int32,queryTriggerInteraction : UnityEngine.QueryTriggerInteraction) : UnityEngine.Collider[]
+---@param center UnityEngine.Vector3
+---@param halfExtents UnityEngine.Vector3
+---@param orientation UnityEngine.Quaternion
+---@param layerMask System.Int32
+---@param queryTriggerInteraction UnityEngine.QueryTriggerInteraction
+---@return UnityEngine.Collider[]
+function m.OverlapBox(center,halfExtents,orientation,layerMask,queryTriggerInteraction)end
+---@overload fun(center : UnityEngine.Vector3,halfExtents : UnityEngine.Vector3,results : UnityEngine.Collider[],orientation : UnityEngine.Quaternion,mask : System.Int32,queryTriggerInteraction : UnityEngine.QueryTriggerInteraction) : System.Int32
+---@overload fun(center : UnityEngine.Vector3,halfExtents : UnityEngine.Vector3,results : UnityEngine.Collider[],orientation : UnityEngine.Quaternion,mask : System.Int32,queryTriggerInteraction : UnityEngine.QueryTriggerInteraction) : System.Int32
+---@overload fun(center : UnityEngine.Vector3,halfExtents : UnityEngine.Vector3,results : UnityEngine.Collider[],orientation : UnityEngine.Quaternion,mask : System.Int32,queryTriggerInteraction : UnityEngine.QueryTriggerInteraction) : System.Int32
+---@param center UnityEngine.Vector3
+---@param halfExtents UnityEngine.Vector3
+---@param results UnityEngine.Collider[]
+---@param orientation UnityEngine.Quaternion
+---@param mask System.Int32
+---@param queryTriggerInteraction UnityEngine.QueryTriggerInteraction
+---@return System.Int32
+function m.OverlapBoxNonAlloc(center,halfExtents,results,orientation,mask,queryTriggerInteraction)end
+---@overload fun(center : UnityEngine.Vector3,halfExtents : UnityEngine.Vector3,direction : UnityEngine.Vector3,results : UnityEngine.RaycastHit[],orientation : UnityEngine.Quaternion,maxDistance : System.Single,layerMask : System.Int32,queryTriggerInteraction : UnityEngine.QueryTriggerInteraction) : System.Int32
+---@overload fun(center : UnityEngine.Vector3,halfExtents : UnityEngine.Vector3,direction : UnityEngine.Vector3,results : UnityEngine.RaycastHit[],orientation : UnityEngine.Quaternion,maxDistance : System.Single,layerMask : System.Int32,queryTriggerInteraction : UnityEngine.QueryTriggerInteraction) : System.Int32
+---@overload fun(center : UnityEngine.Vector3,halfExtents : UnityEngine.Vector3,direction : UnityEngine.Vector3,results : UnityEngine.RaycastHit[],orientation : UnityEngine.Quaternion,maxDistance : System.Single,layerMask : System.Int32,queryTriggerInteraction : UnityEngine.QueryTriggerInteraction) : System.Int32
+---@overload fun(center : UnityEngine.Vector3,halfExtents : UnityEngine.Vector3,direction : UnityEngine.Vector3,results : UnityEngine.RaycastHit[],orientation : UnityEngine.Quaternion,maxDistance : System.Single,layerMask : System.Int32,queryTriggerInteraction : UnityEngine.QueryTriggerInteraction) : System.Int32
+---@param center UnityEngine.Vector3
+---@param halfExtents UnityEngine.Vector3
+---@param direction UnityEngine.Vector3
+---@param results UnityEngine.RaycastHit[]
+---@param orientation UnityEngine.Quaternion
+---@param maxDistance System.Single
+---@param layerMask System.Int32
+---@param queryTriggerInteraction UnityEngine.QueryTriggerInteraction
+---@return System.Int32
+function m.BoxCastNonAlloc(center,halfExtents,direction,results,orientation,maxDistance,layerMask,queryTriggerInteraction)end
+---@overload fun(center : UnityEngine.Vector3,halfExtents : UnityEngine.Vector3,direction : UnityEngine.Vector3,orientation : UnityEngine.Quaternion,maxDistance : System.Single,layerMask : System.Int32,queryTriggerInteraction : UnityEngine.QueryTriggerInteraction) : UnityEngine.RaycastHit[]
+---@overload fun(center : UnityEngine.Vector3,halfExtents : UnityEngine.Vector3,direction : UnityEngine.Vector3,orientation : UnityEngine.Quaternion,maxDistance : System.Single,layerMask : System.Int32,queryTriggerInteraction : UnityEngine.QueryTriggerInteraction) : UnityEngine.RaycastHit[]
+---@overload fun(center : UnityEngine.Vector3,halfExtents : UnityEngine.Vector3,direction : UnityEngine.Vector3,orientation : UnityEngine.Quaternion,maxDistance : System.Single,layerMask : System.Int32,queryTriggerInteraction : UnityEngine.QueryTriggerInteraction) : UnityEngine.RaycastHit[]
+---@overload fun(center : UnityEngine.Vector3,halfExtents : UnityEngine.Vector3,direction : UnityEngine.Vector3,orientation : UnityEngine.Quaternion,maxDistance : System.Single,layerMask : System.Int32,queryTriggerInteraction : UnityEngine.QueryTriggerInteraction) : UnityEngine.RaycastHit[]
+---@param center UnityEngine.Vector3
+---@param halfExtents UnityEngine.Vector3
+---@param direction UnityEngine.Vector3
+---@param orientation UnityEngine.Quaternion
+---@param maxDistance System.Single
+---@param layerMask System.Int32
+---@param queryTriggerInteraction UnityEngine.QueryTriggerInteraction
+---@return UnityEngine.RaycastHit[]
+function m.BoxCastAll(center,halfExtents,direction,orientation,maxDistance,layerMask,queryTriggerInteraction)end
+---@overload fun(point0 : UnityEngine.Vector3,point1 : UnityEngine.Vector3,radius : System.Single,results : UnityEngine.Collider[],layerMask : System.Int32,queryTriggerInteraction : UnityEngine.QueryTriggerInteraction) : System.Int32
+---@overload fun(point0 : UnityEngine.Vector3,point1 : UnityEngine.Vector3,radius : System.Single,results : UnityEngine.Collider[],layerMask : System.Int32,queryTriggerInteraction : UnityEngine.QueryTriggerInteraction) : System.Int32
+---@param point0 UnityEngine.Vector3
+---@param point1 UnityEngine.Vector3
+---@param radius System.Single
+---@param results UnityEngine.Collider[]
+---@param layerMask System.Int32
+---@param queryTriggerInteraction UnityEngine.QueryTriggerInteraction
+---@return System.Int32
+function m.OverlapCapsuleNonAlloc(point0,point1,radius,results,layerMask,queryTriggerInteraction)end
+---@param worldBounds UnityEngine.Bounds
+---@param subdivisions System.Int32
+---@return System.Void
+function m.RebuildBroadphaseRegions(worldBounds,subdivisions)end
+UnityEngine = {}
+UnityEngine.Physics = m
+return m

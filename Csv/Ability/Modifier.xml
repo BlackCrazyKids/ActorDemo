@@ -1,0 +1,46 @@
+<Define Namespace = "Ability">
+    <Class Name = "Modifier">
+        <Field Name = "Attributes" Value = "ModifierAttribute" Des = "修饰器特性描述" />
+        <Field Name = "Duration" Value = "float" Des = "持续时间" />
+        <Field Name = "TimeInterval" Value = "float" Des = "计时器时间间隔,默认-1,无限期" />
+        <Field Name = "EffectAttach" Value = "AttachType" Des = "特效附着点类型" />
+        <Field Name = "Effect" Value = "string" Des = "特效名称" />
+        <Field Name = "IsBuff" Value = "bool" Des = "是否为增益魔法" />
+        <Field Name = "IsDebuff" Value = "bool" Des = "是否为减益魔法" />
+        <Field Name = "IsPassive" Value = "bool" Des = "是否被动,是否默认激活true,学习后自己动激活" />
+        <Field Name = "IsPurgable" Value = "bool" Des = "是否可以解除效果,针对buff/debuff" />
+        <Field Name = "Properties" Value = "list:Property" Des = "属性修改列表" />
+        <Field Name = "States" Value = "list:State" Des = "状态修改列表" />
+        <Field Name = "Events" Value = "list:string" Des = "基础事件列表" />
+    </Class>
+
+    <Class Name = "Property">
+        <Field Name = "Property" Value = "PropertyType" Des = "属性类型" />
+        <Field Name = "Value" Value = "int" Des = "修改量" />
+    </Class>
+    <Class Name = "State">
+        <Field Name = "State" Value = "StateType" Des = "状态类型" />
+        <Field Name = "Value" Value = "bool" Des = "是否激活" />
+    </Class>
+
+    <Enum Name="ModifierAttribute">
+        <Const Name = "MODIFIER_ATTRIBUTE_NONE" Value = "1" Des = "无" />
+        <Const Name = "MODIFIER_ATTRIBUTE_IGNORE_INVULNERABLE" Value = "2" Des = "忽视无敌" />
+        <Const Name = "MODIFIER_ATTRIBUTE_MULTIPLE" Value = "4" Des = "可叠加" />
+        <Const Name = "MODIFIER_ATTRIBUTE_PERMANENT" Value = "8" Des = "正常" />
+    </Enum>    
+
+    <Enum Name="AttachType">
+        <Const Name = "TargetPoint" Value = "0" Des = "目标位置点" />
+        <Const Name = "TargetChildNode" Value = "1" Des = "目标子节点,查找目标子节点,并挂载在此节点下" />
+    </Enum>
+
+    <Enum Name="PropertyType">
+        <Const Name = "MODIFIER_PROPMANA_BONUS " Value = "0" Des = "修改目前魔量 " />
+        <Const Name = "MODIFIER_PROPHEALTH_BONUS" Value = "1" Des = "修改目前血量" />
+    </Enum>
+    <Enum Name="StateType">
+        <Const Name = "MODIFIER_STATE_INVISIBLE " Value = "0" Des = "隐身状态" />
+        <Const Name = "MODIFIER_STATE_INVULNERABLE " Value = "1" Des = "无敌状态 " />
+    </Enum>
+</Define>

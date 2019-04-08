@@ -1,0 +1,46 @@
+<Define Namespace = "AllType">
+    <Class Name = "AllClass"  Index = "ID" DataPath="Data所有Class类型.xlsx">
+        <Const Name = "ConstString" Type = "string" Value = "Hello World" Des = "常量字符串" />
+        <Const Name = "ConstFloat" Type = "float" Value = "3.141527" Des = "常量浮点值" />
+        <Field Name = "ID" Type = "int" Des = "ID" Group = "d"/>
+        <Field Name = "VarLong" Type = "long" Des = "长整型" Group = "d"/>
+        <Field Name = "VarFloat" Type = "float" Des = "浮点型" Group = "d"/>
+        <Field Name = "VarString" Type = "string" Des = "字符串" Group = "d"/>
+        <Field Name = "VarBool" Type = "bool" Des = "布尔型" Group = "d"/>
+        <Field Name = "VarEnum" Type = "CardElement" Des = "枚举类型" Group = "d"/>
+        <Field Name = "VarClass" Type = "SingleClass" Des = "类类型" Group = "d"/>
+        <Field Name = "VarListBase" Type = "list:string" Des = "字符串列表" Group = "d"/>
+        <Field Name = "VarListClass" Type = "list:SingleClass" Des = "Class列表" Group = "d"/>
+        <Field Name = "VarListCardElem" Type = "list:string" Des = "字符串列表" Group = "d"/>
+        <Field Name = "VarDictBase" Type = "dict:int:string" Des = "基础类型字典" Group = "d"/>
+        <Field Name = "VarDictEnum" Type = "dict:long:CardElement" Des = "枚举类型字典" Group = "d"/>
+        <Field Name = "VarDictClass" Type = "dict:string:SingleClass" Des = "类类型字典" Group = "d"/>
+    </Class>
+
+	<Class Name = "SingleClass">
+        <Field Name = "Var1" Type = "string" Des = "Var1" />
+        <Field Name = "Var2" Type = "float" Des = "Var2" />
+    </Class>
+	
+	<Class Name = "M1" Inherit = "SingleClass">
+		<Field Name = "V3" Type = "long" Des = "继承1"/>
+	</Class>
+	<Class Name = "M2" Inherit = "SingleClass">
+		<Field Name = "V4" Type = "bool" Des = "继承2"/>
+	</Class>
+	
+    <Enum Name="CardElement">
+        <Const Name = "Attack" Value = "0" Alias="攻击"/>
+        <Const Name = "Extract" Value = "1" Alias="抽牌"/>
+        <Const Name = "Renounce" Value = "2" Alias="弃牌"/>
+        <Const Name = "Armor" Value = "3" Alias="护甲"/>
+        <Const Name = "Control" Value = "4" Alias="控制"/>
+        <Const Name = "Cure" Value = "5" Alias="治疗"/>
+        <Const Name = "Oneself" Value = "6" Alias="自残"/>
+        <Const Name = "Hand" Value = "7" Alias="手牌"/>
+        <Const Name = "Brary" Value = "8" Alias="牌库"/>
+        <Const Name = "Handack" Value = "9" Alias="手牌攻击"/>
+    </Enum>
+</Define>
+
+

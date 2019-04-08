@@ -1,0 +1,46 @@
+<Root Type ="ActorConfig">
+<ModelName>天音</ModelName>
+<BaseModelName>NPC模型</BaseModelName>
+<GeneralActions>
+<Pair>
+<Key>走</Key>
+<Value Type ="GeneralAction">
+<ActionName>走</ActionName>
+<OtherModelName></OtherModelName>
+<ActionClip>walk</ActionClip>
+<PreActionFile></PreActionFile>
+<PostActionFile></PostActionFile>
+<ActionSpeed>0</ActionSpeed>
+<LoopTimes>0</LoopTimes>
+<Timelines>
+</Timelines>
+</Value>
+</Pair>
+</GeneralActions>
+<SkillActions>
+<Pair>
+<Key>攻击2</Key>
+<Value Type ="SkillAction">
+<ActionName>攻击2</ActionName>
+<OtherModelName></OtherModelName>
+<ActionClip>attack02</ActionClip>
+<PreActionFile></PreActionFile>
+<PostActionFile></PostActionFile>
+<ActionSpeed>0</ActionSpeed>
+<LoopTimes>0</LoopTimes>
+<Timelines>
+</Timelines>
+<SkillExpireTime>0</SkillExpireTime>
+<SkillEndTime>0</SkillEndTime>
+<CanInterrupt>False</CanInterrupt>
+<LockType>0</LockType>
+<SkillRange>0</SkillRange>
+<CanShowSkillRange>False</CanShowSkillRange>
+<CanRotate>False</CanRotate>
+<CanMove>False</CanMove>
+<SequenceDict>
+</SequenceDict>
+</Value>
+</Pair>
+</SkillActions>
+</Root>

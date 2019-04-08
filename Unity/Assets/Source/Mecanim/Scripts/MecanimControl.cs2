@@ -1,0 +1,651 @@
+﻿using UnityEngine;
+using System.Collections;
+using System.Collections.Generic;
+
+[System.Serializable]
+public class AnimationData {
+	public AnimationClip clip;
+	public string clipName;
+	public float speed = 1;
+	public float transitionDuration = -1;
+	public WrapMode wrapMode;
+	public bool applyRootMotion;
+	[HideInInspector] public int timesPlayed = 0;
+	[HideInInspector] public float secondsPlayed = 0;
+	[HideInInspector] public float length = 0;
+	[HideInInspector] public int stateHash;
+	[HideInInspector] public string stateName;
+}
+
+[RequireComponent (typeof (Animator))]
+public class MecanimControl : MonoBehaviour {
+
+	public AnimationData defaultAnimation = new AnimationData();
+    public Dictionary<string, AnimationData> animations = new Dictionary<string, AnimationData>();
+
+    public bool debugMode = false;
+	public bool alwaysPlay = false;
+    public bool playOnStart = true;
+    public bool overrideRootMotion = false;
+	public float defaultTransitionDuration = 0.15f;
+	public WrapMode defaultWrapMode = WrapMode.Loop;
+
+	private Animator animator;
+	
+	private RuntimeAnimatorController controller1;
+	private RuntimeAnimatorController controller2;
+	private RuntimeAnimatorController controller3;
+	private RuntimeAnimatorController controller4;
+
+	private AnimationData currentAnimationData;
+	private bool currentMirror;
+
+	public delegate void AnimEvent(AnimationData animationData);
+	public static event AnimEvent OnAnimationBegin;
+	public static event AnimEvent OnAnimationEnd;
+	public static event AnimEvent OnAnimationLoop;
+	
+	// UNITY METHODS
+	void Awake () {
+        Util.LogColor("red", "MecanimControl Awake");
+        animator = gameObject.GetComponent<Animator>();
+		controller1 = (RuntimeAnimatorController) Resources.Load("controller1");
+		controller2 = (RuntimeAnimatorController) Resources.Load("controller2");
+		controller3 = (RuntimeAnimatorController) Resources.Load("controller3");
+		controller4 = (RuntimeAnimatorController) Resources.Load("controller4");
+		
+		
+
+	}
+	
+	void Start(){
+        Util.LogColor("red", "MecanimControl Start");
+        foreach (var pair in animations)
+        {
+            AnimationData animData = pair.Value;
+            if (animData.wrapMode == WrapMode.Default) animData.wrapMode = defaultWrapMode;
+            animData.clip.wrapMode = animData.wrapMode;
+        }
+
+        if (defaultAnimation.clip == null && animations.Count > 0)
+        {
+            var e = animations.GetEnumerator();
+            if (e.MoveNext())
+            {
+                var animData = e.Current.Value;
+                SetDefaultClip(animData.clip, "Default", animData.speed, animData.wrapMode);
+            }
+        }
+
+        if (defaultAnimation.clip != null){
+			AnimatorOverrideController overrideController = new AnimatorOverrideController();
+			overrideController.runtimeAnimatorController = controller1;
+            currentAnimationData = defaultAnimation;
+            currentAnimationData.stateName = "State3";
+            currentAnimationData.length = currentAnimationData.clip.length;
+            if (playOnStart)
+            {
+                //animator.Rebind();
+                animator.Play("State2", 0, 0);
+                overrideController["State1"] = currentAnimationData.clip;
+                overrideController["State2"] = currentAnimationData.clip;
+                overrideController["State3"] = currentAnimationData.clip;
+            }
+            if (overrideRootMotion) animator.applyRootMotion = currentAnimationData.applyRootMotion;
+            SetSpeed(currentAnimationData.speed);
+            animator.runtimeAnimatorController = overrideController;
+
+        }
+	}
+	
+	void FixedUpdate(){
+		//WrapMode emulator
+		if (currentAnimationData ==null||currentAnimationData.clip == null) return;
+		if (currentAnimationData.secondsPlayed == currentAnimationData.length){
+			if (currentAnimationData.clip.wrapMode == WrapMode.Loop || currentAnimationData.clip.wrapMode == WrapMode.PingPong) {
+				if (MecanimControl.OnAnimationLoop != null) MecanimControl.OnAnimationLoop(currentAnimationData);
+				currentAnimationData.timesPlayed ++;
+				
+				if (currentAnimationData.clip.wrapMode == WrapMode.Loop) {
+					SetCurrentClipPosition(0);
+				}
+				
+				if (currentAnimationData.clip.wrapMode == WrapMode.PingPong) {
+					SetSpeed(currentAnimationData.clipName, -currentAnimationData.speed);
+					SetCurrentClipPosition(0);
+				}
+				
+			}else if (currentAnimationData.timesPlayed == 0) {
+				if (MecanimControl.OnAnimationEnd != null) MecanimControl.OnAnimationEnd(currentAnimationData);
+				currentAnimationData.timesPlayed = 1;
+				
+				if (currentAnimationData.clip.wrapMode == WrapMode.Once && alwaysPlay) {
+					Play(defaultAnimation, currentMirror);
+				}else if (!alwaysPlay){
+					animator.speed = 0;
+				}
+			}
+		}else{
+			//currentAnimationData.secondsPlayed += Time.deltaTime * animator.speed * Time.timeScale;
+			currentAnimationData.secondsPlayed += (Time.fixedDeltaTime * animator.speed);
+			if (currentAnimationData.secondsPlayed > currentAnimationData.length) 
+				currentAnimationData.secondsPlayed = currentAnimationData.length;
+		}
+	}
+	
+	void OnGUI(){
+		//Toggle debug mode to see the live data in action
+		if (debugMode) {
+			GUI.Box (new Rect (Screen.width - 340,40,340,400), "Animation Data");
+			GUI.BeginGroup(new Rect (Screen.width - 330,60,400,400));{
+				
+				AnimatorClipInfo[] animationInfoArray = animator.GetCurrentAnimatorClipInfo(0);
+				foreach (AnimatorClipInfo animationInfo in animationInfoArray){
+					AnimatorStateInfo animatorStateInfo = animator.GetCurrentAnimatorStateInfo(0);
+					GUILayout.Label(animationInfo.clip.name);
+					GUILayout.Label("-Wrap Mode: "+ animationInfo.clip.wrapMode);
+					GUILayout.Label("-Is Playing: "+ IsPlaying(animationInfo.clip.name));
+					GUILayout.Label("-Blend Weight: "+ animationInfo.weight);
+					GUILayout.Label("-Normalized Time: "+ animatorStateInfo.normalizedTime);
+					GUILayout.Label("-Length: "+ animationInfo.clip.length);
+					GUILayout.Label("----");
+				}
+				
+				GUILayout.Label("--Current Animation Data--");
+				GUILayout.Label("-Current Clip Name: "+ currentAnimationData.clipName);
+				GUILayout.Label("-Current Speed: "+ GetSpeed().ToString());
+				GUILayout.Label("-Times Played: "+ currentAnimationData.timesPlayed);
+				GUILayout.Label("-Seconds Played: "+ currentAnimationData.secondsPlayed);
+				GUILayout.Label("-Emul. Normalized: "+ (currentAnimationData.secondsPlayed/currentAnimationData.length));
+				GUILayout.Label("-Lengh: "+ currentAnimationData.length);
+			}GUI.EndGroup();
+		}
+	}
+
+    public void ClearClips()
+    {
+        animations.Clear();
+    }
+
+
+    // MECANIM CONTROL METHODS
+    public void RemoveClip(string name) {
+        if (animations.ContainsKey(name))
+        {
+            animations.Remove(name);
+        }
+	}
+
+
+	
+	public void SetDefaultClip(AnimationClip clip, string name, float speed, WrapMode wrapMode) {
+        defaultAnimation.clip = clip;// (AnimationClip) Instantiate(clip);
+		defaultAnimation.clip.wrapMode = wrapMode;
+		defaultAnimation.clipName = name;
+		defaultAnimation.speed = speed;
+		defaultAnimation.transitionDuration = -1;
+		defaultAnimation.wrapMode = wrapMode;
+	}
+	
+	public void AddClip(AnimationClip clip, string newName) {
+		AddClip(clip, newName, 1, defaultWrapMode);
+	}
+
+	public void AddClip(AnimationClip clip, string newName, float speed, WrapMode wrapMode) {
+        Util.LogColor("green", "AddClip:" + newName+ wrapMode);
+        if (GetAnimationData(newName) != null)
+        {
+            Debug.LogError("An animation with the name '" + newName + "' already exists.");
+            return;
+        } 
+		AnimationData animData = new AnimationData();
+        animData.clip = clip;// (AnimationClip) Instantiate(clip);
+		if (wrapMode == WrapMode.Default) wrapMode = defaultWrapMode;
+		animData.clip.wrapMode = wrapMode;
+		animData.clip.name = newName;
+		animData.clipName = newName;
+		animData.speed = speed;
+		animData.length = clip.length;
+		animData.wrapMode = wrapMode;
+        animations[newName] = animData;
+	}
+
+    private void _playAnimation(AnimationData targetAnimationData, float blendingTime, float normalizedTime, bool mirror)
+    {
+        //The overrite machine. Creates an overrideController, replace its core animations and restate it back in
+        if (targetAnimationData == null || targetAnimationData.clip == null) return;
+
+        Util.LogColor("cyan", "_playAnimation:" + targetAnimationData.clipName);
+
+        AnimatorOverrideController overrideController = new AnimatorOverrideController();
+
+        currentMirror = mirror;
+
+        float newAnimatorSpeed = Mathf.Abs(targetAnimationData.speed);
+        float currentNormalizedTime = GetCurrentClipPosition();
+
+        if (mirror)
+        {
+            if (targetAnimationData.speed > 0)
+            {
+                overrideController.runtimeAnimatorController = controller2;
+            }
+            else
+            {
+                overrideController.runtimeAnimatorController = controller4;
+            }
+        }
+        else
+        {
+            if (targetAnimationData.speed > 0)
+            {
+                overrideController.runtimeAnimatorController = controller1;
+            }
+            else
+            {
+                overrideController.runtimeAnimatorController = controller3;
+            }
+        }
+
+        overrideController["State1"] = currentAnimationData.clip;
+        overrideController["State2"] = targetAnimationData.clip;
+
+
+        if (blendingTime == -1) blendingTime = currentAnimationData.transitionDuration;
+        //if (blendingTime == -1) blendingTime = defaultTransitionDuration;
+
+        if (blendingTime <= 0)
+        {
+            animator.runtimeAnimatorController = overrideController;
+            animator.Play("State2", 0, normalizedTime);
+            Util.LogColor("red", "MecanimControl animator.Play ");
+        }
+        else
+        {
+            animator.runtimeAnimatorController = overrideController;
+
+            //animator.Play(state1Hash, 0, currentNormalizedTime);
+            //currentAnimationData.secondsPlayed = currentNormalizedTime * currentAnimationData.length;
+
+            //currentAnimationData.stateHash = state1Hash;
+            currentAnimationData.stateName = "State1";
+            SetCurrentClipPosition(currentNormalizedTime);
+
+            animator.Update(0);
+            animator.CrossFade("State2", blendingTime / newAnimatorSpeed, 0, normalizedTime);
+        }
+
+
+        targetAnimationData.timesPlayed = 0;
+        targetAnimationData.secondsPlayed = (normalizedTime * targetAnimationData.clip.length) / newAnimatorSpeed;
+        targetAnimationData.length = targetAnimationData.clip.length;
+
+        if (overrideRootMotion) animator.applyRootMotion = targetAnimationData.applyRootMotion;
+        SetSpeed(targetAnimationData.speed);
+
+        currentAnimationData = targetAnimationData;
+        currentAnimationData.stateName = "State2";
+        //currentAnimationData.stateHash = state2Hash;
+
+        if (MecanimControl.OnAnimationBegin != null) MecanimControl.OnAnimationBegin(currentAnimationData);
+    }
+
+
+    #region Operate Current Clip
+
+
+    public string GetCurrentClipName()
+    {
+        return currentAnimationData.clipName;
+    }
+
+    public AnimationData GetCurrentAnimationData()
+    {
+        return currentAnimationData;
+    }
+
+    public int GetCurrentClipPlayCount()
+    {
+        return currentAnimationData.timesPlayed;
+    }
+
+    public float GetCurrentClipTime()
+    {
+        return currentAnimationData.secondsPlayed;
+    }
+
+    public float GetCurrentClipLength()
+    {
+        return currentAnimationData.length;
+    }
+
+    public void SetCurrentClipPosition(float normalizedTime)
+    {
+        SetCurrentClipPosition(normalizedTime, false);
+    }
+
+    public void SetCurrentClipPosition(float normalizedTime, bool pause)
+    {
+        //animator.Play(currentAnimationData.currentState.nameHash, 0, normalizedTime);
+        //Util.LogColor("red", "MecanimControl animator.Play ");
+        animator.Play(currentAnimationData.stateName, 0, normalizedTime);
+        currentAnimationData.secondsPlayed = normalizedTime * currentAnimationData.length;
+        if (pause) Pause();
+    }
+
+    public float GetCurrentClipPosition()
+    {
+        return currentAnimationData == null?0:currentAnimationData.secondsPlayed / currentAnimationData.length;
+    }
+
+    public float GetNormalizedTime() {
+        AnimatorStateInfo animatorStateInfo = animator.GetCurrentAnimatorStateInfo(0);
+        return animatorStateInfo.normalizedTime;
+    }
+
+
+    public void Play()
+    {
+        animator.speed = Mathf.Abs(currentAnimationData.speed);
+    }
+
+    public void Stop()
+    {
+        Play(defaultAnimation.clipName, defaultTransitionDuration, 0, currentMirror);
+    }
+
+    public void Pause()
+    {
+        animator.speed = 0;
+    }
+
+    public void SetSpeed(float speed)
+    {
+        animator.speed = Mathf.Abs(speed);
+    }
+
+    public float GetSpeed()
+    {
+        return animator.speed;
+    }
+
+
+    public void RestoreSpeed()
+    {
+        //SetCurrentClipPosition(GetCurrentClipPosition());
+        SetSpeed(currentAnimationData.speed);
+    }
+
+    public void Rewind()
+    {
+        SetSpeed(-currentAnimationData.speed);
+    }
+
+    public void SetWrapMode(WrapMode wrapMode)
+    {
+        defaultWrapMode = wrapMode;
+    }
+
+
+    public bool GetMirror()
+    {
+        return currentMirror;
+    }
+
+    public void SetMirror(bool toggle)
+    {
+        SetMirror(toggle, 0, false);
+    }
+
+    public void SetMirror(bool toggle, float blendingTime)
+    {
+        SetMirror(toggle, blendingTime, false);
+    }
+
+    public void SetMirror(bool toggle, float blendingTime, bool forceMirror)
+    {
+        if (currentMirror == toggle && !forceMirror) return;
+
+        if (blendingTime == 0) blendingTime = defaultTransitionDuration;
+        _playAnimation(currentAnimationData, blendingTime, GetCurrentClipPosition(), toggle);
+    }
+
+    #endregion
+
+
+
+    #region Operate By AnimationData
+
+    public AnimationData GetAnimationData(string clipName)
+    {
+        if (animations.ContainsKey(clipName))
+        {
+            return animations[clipName];
+        }
+        if (clipName == defaultAnimation.clipName) return defaultAnimation;
+        return null;
+    }
+
+    public void CrossFade(AnimationData animationData, float blendingTime, float normalizedTime, bool mirror)
+    {
+        _playAnimation(animationData, blendingTime, normalizedTime, mirror);
+    }
+
+    public void Play(AnimationData animationData, bool mirror)
+    {
+        _playAnimation(animationData, animationData.transitionDuration, 0, mirror);
+    }
+
+    public void Play(AnimationData animationData)
+    {
+        _playAnimation(animationData, animationData.transitionDuration, 0, currentMirror);
+    }
+
+    public void Play(AnimationData animationData, float blendingTime, float normalizedTime, bool mirror)
+    {
+        _playAnimation(animationData, blendingTime, normalizedTime, mirror);
+    }
+
+    public bool IsPlaying(AnimationData animData)
+    {
+        return IsPlaying(animData, 0);
+    }
+
+    public bool IsPlaying(AnimationData animData, float weight)
+    {
+        if (animData == null) return false;
+        if (currentAnimationData == null) return false;
+        if (currentAnimationData == animData && animData.wrapMode == WrapMode.Once && animData.timesPlayed > 0) return false;
+        if (currentAnimationData == animData) return true;
+
+        AnimatorClipInfo[] animationInfoArray = animator.GetCurrentAnimatorClipInfo(0);
+        foreach (AnimatorClipInfo animationInfo in animationInfoArray)
+        {
+            if (animData.clip == animationInfo.clip && animationInfo.weight >= weight) return true;
+        }
+        return false;
+    }
+
+    public bool IsPlayingSkill(AnimationData animData, float loop)
+    {
+        return IsPlaying(animData) && GetNormalizedTime() > loop;
+    }
+
+    public void SetWrapMode(AnimationData animationData, WrapMode wrapMode)
+    {
+        animationData.wrapMode = wrapMode;
+        animationData.clip.wrapMode = wrapMode;
+    }
+
+    #endregion
+
+
+    #region Operate By String
+    public void CrossFade(string clipName, float blendingTime){
+		CrossFade(clipName, blendingTime, 0, currentMirror);
+	}
+
+	public void CrossFade(string clipName, float blendingTime, float normalizedTime, bool mirror){
+		_playAnimation(GetAnimationData(clipName), blendingTime, normalizedTime, mirror);
+	}
+
+
+    public void Play(string clipName, float blendingTime, float normalizedTime, bool mirror)
+    {
+        _playAnimation(GetAnimationData(clipName), blendingTime, normalizedTime, mirror);
+    }
+
+    public void Play(string clipName, bool mirror)
+    {
+        _playAnimation(GetAnimationData(clipName), 0, 0, mirror);
+    }
+
+
+    public void Play(string clipName)
+    {
+        _playAnimation(GetAnimationData(clipName), 0, 0, currentMirror);
+    }
+
+    public bool IsPlaying(string clipName)
+    {
+        return IsPlaying(GetAnimationData(clipName));
+    }
+
+    public bool IsPlaying(string clipName, float weight)
+    {
+        return IsPlaying(GetAnimationData(clipName), weight);
+    }
+
+    public bool IsPlayingSkill(string clipName, float loop)
+    {
+        return IsPlaying(clipName) && GetNormalizedTime() < loop;
+    }
+    public void SetSpeed(string clipName, float speed)
+    {
+        AnimationData animData = GetAnimationData(clipName);
+        if (animData.speed == speed && animator.speed == Mathf.Abs(speed)) return;
+        animData.speed = speed;
+        if (IsPlaying(clipName)) SetSpeed(speed);
+    }
+
+    public float GetSpeed(string clipName)
+    {
+        AnimationData animData = GetAnimationData(clipName);
+        return animData.speed;
+    }
+
+    public void SetWrapMode(string clipName, WrapMode wrapMode)
+    {
+        AnimationData animData = GetAnimationData(clipName);
+        animData.wrapMode = wrapMode;
+        animData.clip.wrapMode = wrapMode;
+    }
+
+    #endregion
+
+
+    /*****************************************************************************************
+    *** 下面为扩展
+    *****************************************************************************************/
+
+    #region Operate By HashCode
+
+    //public bool IsPlaying(int hashclip)
+    //{
+    //    return IsPlaying(LuaHelper.hash_name_map[hashclip]);
+    //}
+
+    public void CrossFade(int hashclip, float blendingTime)
+    {
+        CrossFade(LuaHelper.hash_name_map[hashclip], blendingTime, 0, currentMirror);
+    }
+
+    public void CrossFade(int hashclip, float blendingTime, float normalizedTime, bool mirror)
+    {
+        CrossFade(LuaHelper.hash_name_map[hashclip], blendingTime, normalizedTime, mirror);
+    }
+
+
+    public void Play(int hashclip, float blendingTime, float normalizedTime, bool mirror)
+    {
+        Play(LuaHelper.hash_name_map[hashclip], blendingTime, normalizedTime, mirror);
+    }
+
+    public void Play(int hashclip, bool mirror)
+    {
+        Play(LuaHelper.hash_name_map[hashclip], 0, 0, mirror);
+    }
+
+
+    public void Play(int hashclip)
+    {
+        Play(LuaHelper.hash_name_map[hashclip], 0, 0, currentMirror);
+    }
+
+    public bool IsPlaying(int hashclip)
+    {
+        return IsPlaying(LuaHelper.hash_name_map[hashclip]);
+    }
+
+
+    public bool IsPlaying(int hashclip, float weight)
+    {
+        return IsPlaying(LuaHelper.hash_name_map[hashclip], weight);
+    }
+
+    public bool IsPlayingSkill(int hashclip, float loop)
+    {
+        return IsPlayingSkill(LuaHelper.hash_name_map[hashclip], loop);
+    }
+
+    public void SetSpeed(int hashclip, float speed)
+    {
+        SetSpeed(LuaHelper.hash_name_map[hashclip], speed);
+    }
+
+    public float GetSpeed(int hashclip)
+    {
+        return GetSpeed(LuaHelper.hash_name_map[hashclip]);
+    }
+
+    public void SetWrapMode(int hashclip, WrapMode wrapMode)
+    {
+        SetWrapMode(LuaHelper.hash_name_map[hashclip], wrapMode);
+    }
+
+    #endregion
+
+    #region Extend For Editor
+    public float GetAnimationLength(string name) {
+        var animData = GetAnimationData(name);
+        if (animData != null) {
+            return animData.length;
+        }
+        return 0;
+    }
+    public void Bake(string targetAnimation)
+    {
+        AnimationData targetAnimationData = GetAnimationData(targetAnimation);
+
+        //The overrite machine. Creates an overrideController, replace its core animations and restate it back in
+        if (targetAnimationData == null || targetAnimationData.clip == null) return;
+
+        currentAnimationData = targetAnimationData;
+        AnimatorOverrideController overrideController = new AnimatorOverrideController();
+        float newAnimatorSpeed = Mathf.Abs(targetAnimationData.speed);
+        overrideController.runtimeAnimatorController = controller1;
+        overrideController["State1"] = targetAnimationData.clip;
+        animator.runtimeAnimatorController = overrideController;
+        animator.Bake("State1");
+    }
+
+    public void Sample(float time)
+    {
+        animator.Sample(time);
+    }
+
+
+    #endregion
+
+
+}

@@ -1,0 +1,65 @@
+<Define Namespace = "Ability">
+    <Class Name = "Event">
+        <Field Name = "Name" Value = "string" Des = "事件名称" />
+        <Field Name = "Actions" Value = "list:Action" Des = "操作列表" />
+    </Class>
+
+    <Class Name = "Action">   </Class>         
+    <Class Name = "PlayClip" Inherit = "Action">
+        <Field Name = "Clip" Value = "string" Des = "动作名称" />
+        <Field Name = "Target" Value = "Target" Des = "目标" />
+    </Class>
+    <Class Name = "PlaySound" Inherit = "Action">
+        <Field Name = "Sound" Value = "string" Des = "声效名称" />
+        <Field Name = "Target" Value = "Target" Des = "目标" />
+    </Class>
+    <Class Name = "PlayEffect" Inherit = "Action">
+        <Field Name = "Effect" Value = "string" Des = "特效名称" />
+        <Field Name = "Target" Value = "Target" Des = "目标" />
+        <Field Name = "AttackPath" Value = "string" Des = "绑定节点路径" />
+    </Class>
+    <Class Name = "AttachEffect" Inherit = "Action">
+        <Field Name = "Effect" Value = "string" Des = "特效名称" />
+        <Field Name = "Target" Value = "Target" Des = "目标" />
+        <Field Name = "AttackPath" Value = "string" Des = "绑定节点路径" />
+    </Class>
+    <Class Name = "LinearProjectile" Inherit = "Action">
+        <Field Name = "Effect" Value = "string" Des = "特效名称" />
+        <Field Name = "MoveSpeed" Value = "float" Des = "移动速度" />
+        <Field Name = "StartPosition" Value = "Target" Des = "开始位置" />
+        <Field Name = "EndPosition" Value = "Target" Des = "结束位置" />
+    </Class>
+    <Class Name = "TrackingProjectile" Inherit = "Action">
+        <Field Name = "Effect" Value = "string" Des = "特效名称" />
+        <Field Name = "MoveSpeed" Value = "float" Des = "移动速度" />
+        <Field Name = "Target" Value = "Target" Des = "目标" />
+        <Field Name = "TrackNode" Value = "string" Des = "绑定点" />    
+    </Class>
+    <Class Name = "ApplyModifier" Inherit = "Action">
+        <Field Name = "Target" Value = "Target" Des = "目标" />
+        <Field Name = "Modifier" Value = "string" Des = "修饰器名称" />
+    </Class>
+    <Class Name = "RemoveModifier" Inherit = "Action">
+        <Field Name = "Target" Value = "Target" Des = "目标" />
+        <Field Name = "Modifier" Value = "string" Des = "修饰器名称" />
+    </Class>
+    <Class Name = "Damage" Inherit = "Action">
+        <Field Name = "Target" Value = "Target" Des = "目标" />
+        <Field Name = "Value" Value = "float" Des = "伤害值" />
+    </Class>
+    <Class Name = "Aura" Inherit = "Action">
+        <Field Name = "Modify" Value = "string" Des = "修饰器名称" />
+        <Field Name = "Radius" Value = "float" Des = "半径" />
+        <Field Name = "Teams" Value = "Team" Des = "筛选队伍类型" />
+        <Field Name = "Types" Value = "Type" Des = "筛选目标类型" />
+        <Field Name = "Flags" Value = "Flag" Des = "标识目标状态" />
+    </Class>
+    <Class Name = "ActOnTargets" Inherit = "Action">
+        <Field Name = "Target" Value = "Target" Des = "目标" />
+        <Field Name = "Actions" Value = "list:Action" Des = "操作列表" />    
+    </Class>
+    <Class Name = "DelayedAction" Inherit = "Action">
+        <Field Name = "Delay" Value = "float" Des = "延迟时间" />
+        <Field Name = "Actions" Value = "list:Action" Des = "操作列表" />
+    </Class>
+</Define>
