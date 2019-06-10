@@ -11,7 +11,7 @@ local Class = Class
 local Util = Util
 local List = List
 local ilist = ilist
-local _event = Class:new("Event")
+local _event = Class:new()
 
 function _event:ctor(name)
     self.name = name or "__unknown__"
@@ -60,7 +60,7 @@ end
 function _event:Trigger(name, ...)
     local handles = self.eventMap[name]
     if not handles then
-        --error("[Event:Trigger]eventlib no event:" .. event)
+        --print("[Event:Trigger]eventlib no event:" .. name)
         return
     end
     for _, handler in ilist(handles) do
@@ -104,8 +104,8 @@ local function NewSimple(name)
         Add = function(self, handler)
             return global:Add(name, handler)
         end,
-        Remove = function(self, event, handler)
-            global:Remove(event, handler)
+        Remove = function(self, handler)
+            global:Remove(name, handler)
         end,
         Trigger = function(self, ...)
             global:Trigger(name, ...)

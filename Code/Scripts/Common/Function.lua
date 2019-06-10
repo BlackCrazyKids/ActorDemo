@@ -44,9 +44,9 @@ local function printwitchcolor(...)
 
     local log = format("<color=%s>%s</color>\t\n", color, concat(args, '\t'))
     if Local.LogTraceback then
-        Debug.Log(log .. traceback());
+        Debug.Log(log .. traceback())
     else
-        Debug.Log(log);
+        Debug.Log(log)
     end
 end
 function printcolor(c, ...)
@@ -101,13 +101,13 @@ end
 
 --Unity对象操作--
 function FindObj(str)
-    return GameObject.Find(str);
+    return GameObject.Find(str)
 end
 function Destroy(obj)
-    GameObject.Destroy(obj);
+    GameObject.Destroy(obj)
 end
 function NewObject(prefab)
-    return GameObject.Instantiate(prefab);
+    return GameObject.Instantiate(prefab)
 end
 function DontDestroyOnLoad(obj)
     if not IsNull(obj) then

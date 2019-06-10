@@ -16,3 +16,6 @@ Local.Moduals ={
 ------------------------------------
 Local.UIPersistentMap = {
 }
+Local.MainCityViews = {
+
+}

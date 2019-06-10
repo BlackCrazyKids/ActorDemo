@@ -10,7 +10,7 @@ local Class = Class
 local Time = Time
 local handler = handler
 
-Timer = Class:new("Timer")
+Timer = Class:new()
 
 local Timer = Timer
 
@@ -72,7 +72,7 @@ function Timer:Update()
 end
 
 --帧计数timer
-FrameTimer = Class:new("FrameTimer")
+FrameTimer = Class:new()
 
 local FrameTimer = FrameTimer
 

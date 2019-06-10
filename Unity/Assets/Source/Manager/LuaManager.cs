@@ -2,33 +2,47 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using System.Runtime.InteropServices;
 using UnityEngine;
 using XLua;
 
 namespace Game
 {
-    public class LuaManager : IManager
+    public class LuaManager : Manager
     {
         public LuaManager() { }
 
         private LuaEnv _luaEnv;
         private List<string> _searchPaths = new List<string>();
-        private XLuaDelegate _luaDelegate;
+
+        private Action<float, float> _luaUpdate;
+        private Action _luaLateUpdate;
+        private Action<float> _luaFixedUpdate;
+        private Action _luaDestroy;
+
         public LuaEnv LuaEnv { get { return _luaEnv; } }
-        public void Init()
+        public override void Init()
         {
             _luaEnv = new LuaEnv();
             _luaEnv.AddLoader(CustomLoader);
-            LuaHelper.Init();
+
+            _luaEnv.AddBuildin("rapidjson", XLua.LuaDLL.Lua.LoadRapidJson);
+            _luaEnv.AddBuildin("pb", XLua.LuaDLL.Lua.LoadLua_Protobuf);
         }
-        public void Dispose()
+        public override void Dispose()
         {
             if (_luaEnv != null)
             {
                 try
                 {
-                    if (_luaDelegate != null)
-                        _luaDelegate.Dispose();
+                    if (_luaDestroy != null)
+                        _luaDestroy();
+
+                    _luaUpdate = null;
+                    _luaLateUpdate = null;
+                    _luaFixedUpdate = null;
+                    _luaDestroy = null;
+
                     _searchPaths.Clear();
                     _luaEnv.Dispose();
                     _luaEnv = null;
@@ -59,8 +73,7 @@ namespace Game
 
             return null;
         }
-
-        public void Tick()
+        private void Tick()
         {
             if (_luaEnv != null && Time.frameCount % 100 == 0)
             {
@@ -68,16 +81,18 @@ namespace Game
                 _luaEnv.FullGc();
             }
         }
+
         public void InitScripts()
         {
+            LuaHelper.Init();
             var luaMain = GetTable("Main");
             luaMain.Get<Action>("Init")();
 
-            var main = Client.Ins.gameObject;
-            _luaDelegate = main.GetComponent<XLuaDelegate>();
-            if (_luaDelegate == null)
-                _luaDelegate = main.AddComponent<XLuaDelegate>();
-            _luaDelegate.Init(luaMain);
+            _luaUpdate += luaMain.Get<Action<float, float>>("Update");
+            _luaLateUpdate += luaMain.Get<Action>("LateUpdate");
+            _luaFixedUpdate += luaMain.Get<Action<float>>("FixedUpdate");
+            _luaDestroy += luaMain.Get<Action>("OnDestroy");
+
             luaMain.Dispose();
         }
         public LuaTable GetTable(string name)
@@ -90,6 +105,50 @@ namespace Game
         {
             return _luaEnv.Global.Get<T>(name);
         }
-    }
 
+        public void Update()
+        {
+            Tick();
+
+            if (_luaUpdate != null)
+                _luaUpdate(Time.deltaTime, Time.unscaledDeltaTime);
+        }
+        public void FixedUpdate()
+        {
+            if (_luaUpdate != null)
+                _luaFixedUpdate(Time.fixedDeltaTime);
+        }
+        public void LateUpdate()
+        {
+            if (_luaUpdate != null)
+                _luaLateUpdate();
+        }
+    }
+}
+
+namespace XLua.LuaDLL
+{
+    /// <summary>
+    /// lua第三方扩展库
+    /// </summary>
+    public partial class Lua
+    {
+        [DllImport(LUADLL, CallingConvention = CallingConvention.Cdecl)]
+        public static extern int luaopen_rapidjson(IntPtr L);
+
+        [MonoPInvokeCallback(typeof(lua_CSFunction))]
+        public static int LoadRapidJson(IntPtr L)
+        {
+            return luaopen_rapidjson(L);
+        }
+
+        [DllImport(LUADLL, CallingConvention = CallingConvention.Cdecl)]
+        public static extern int luaopen_pb(IntPtr L);
+
+        [MonoPInvokeCallback(typeof(lua_CSFunction))]
+        public static int LoadLua_Protobuf(IntPtr L)
+        {
+            return luaopen_pb(L);
+        }
+    }
 }

@@ -33,14 +33,11 @@ LuaHelper = Game.LuaHelper
 Interface = Game.Platform.Interface
 ResMgr = Game.Client.ResMgr
 
-LuaWindow = Game.LuaWindow
-
 local require = require
 require 'xlua.extend'
 require 'xlua.coroutine'            --?
 XUtil = require 'xlua.util'
 XProfiler = require 'xlua.profiler'
-XMemory = require 'xlua.memory'
 
 Time = require "UnityEngine.Time"
 Mathf = require "UnityEngine.Mathf"
@@ -59,7 +56,6 @@ Plane = require "UnityEngine.Plane"
 require "Local"
 -----------------------------------------------------------
 require "Common.Function"
-require "Common.FairyGUI"
 
 Define = require "Define"
 ---@type Class
@@ -67,9 +63,9 @@ Class = require "Common.Class"
 Util = require "Common.Util"
 List = require 'Common.List'
 Event = require "Common.Event"
-Easing = require "Common.Easing"
 GameEvent = require "Common.GameEvent"
-
+Protocol = require "Protocol.Protocol"
+Message = require "Protocol.Message"
 require "Common.Timer"
 
 unpack = table.unpack
@@ -77,6 +73,13 @@ unpack = table.unpack
 IsEditor = Application.isEditor
 IsAndroid = Application.platform == RuntimePlatform.Android
 IsIPhone = Application.platform == RuntimePlatform.IPhonePlayer
+
+if IsEditor then
+    --- 导出文件路径以Unity/为相对路径
+    Memory = require "xlua.MemoryReferenceInfo"
+    Memory.m_cConfig.m_bAllMemoryRefFileAddTime = false
+    Profiler = require "xlua.profiler"
+end
 
 function LuaGC()
     local before = collectgarbage("count")

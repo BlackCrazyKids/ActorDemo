@@ -426,33 +426,36 @@ Vector3.__tostring = function(self)
 	return "["..self.x..","..self.y..","..self.z.."]"
 end
 
-Vector3.__div = function(va, d)
-	return _new(va.x / d, va.y / d, va.z / d)
+Vector3.__div = function(a, d)
+	return _new(a.x / d, a.y / d, a.z / d)
 end
 
-Vector3.__mul = function(va, d)
+Vector3.__mul = function(a, d)
 	if type(d) == "number" then
-		return _new(va.x * d, va.y * d, va.z * d)
+		return _new(a.x * d, a.y * d, a.z * d)
 	else
-		local vec = va:Clone()
+		local vec = a:Clone()
 		vec:MulQuat(d)
 		return vec
 	end	
 end
 
-Vector3.__add = function(va, vb)
-	return _new(va.x + vb.x, va.y + vb.y, va.z + vb.z)
+Vector3.__add = function(a, b)
+	return _new(a.x + b.x, a.y + b.y, a.z + b.z)
 end
 
-Vector3.__sub = function(va, vb)
-	return _new(va.x - vb.x, va.y - vb.y, va.z - vb.z)
+Vector3.__sub = function(a, b)
+	return _new(a.x - b.x, a.y - b.y, a.z - b.z)
 end
 
-Vector3.__unm = function(va)
-	return _new(-va.x, -va.y, -va.z)
+Vector3.__unm = function(a)
+	return _new(-a.x, -a.y, -a.z)
 end
 
 Vector3.__eq = function(a,b)
+	if a== nil or b == nil then
+		return false
+	end
 	local v = a - b
 	local delta = v:SqrMagnitude()
 	return delta < 1e-10

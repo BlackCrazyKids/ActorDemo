@@ -5,17 +5,13 @@ local type = type
 ---@class Class
 local Class = {}
 
-function Class:new(className, base)
-    assert(type(className) == "string", "You must provide a name(string) for your class")
+function Class:new(base)
     local class = {}
     class.__index = class
-    class.__class = className
 
+    local meta = setmetatable(class, {})
     if base then
-        setmetatable(class, { __index = base })
-        class.base = base
-    else
-        setmetatable(class, {})
+        meta.__index = base
     end
 
     function class:new(...)

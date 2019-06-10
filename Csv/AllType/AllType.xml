@@ -1,35 +1,41 @@
-<Define Namespace = "AllType">
-    <Class Name = "AllClass"  Index = "ID" DataPath="Data所有Class类型.xlsx">
-        <Const Name = "ConstString" Type = "string" Value = "Hello World" Des = "常量字符串" />
-        <Const Name = "ConstFloat" Type = "float" Value = "3.141527" Des = "常量浮点值" />
-        <Field Name = "ID" Type = "int" Des = "ID" Group = "d"/>
-        <Field Name = "VarLong" Type = "long" Des = "长整型" Group = "d"/>
-        <Field Name = "VarFloat" Type = "float" Des = "浮点型" Group = "d"/>
-        <Field Name = "VarString" Type = "string" Des = "字符串" Group = "d"/>
-        <Field Name = "VarBool" Type = "bool" Des = "布尔型" Group = "d"/>
-        <Field Name = "VarEnum" Type = "CardElement" Des = "枚举类型" Group = "d"/>
-        <Field Name = "VarClass" Type = "SingleClass" Des = "类类型" Group = "d"/>
-        <Field Name = "VarListBase" Type = "list:string" Des = "字符串列表" Group = "d"/>
-        <Field Name = "VarListClass" Type = "list:SingleClass" Des = "Class列表" Group = "d"/>
-        <Field Name = "VarListCardElem" Type = "list:string" Des = "字符串列表" Group = "d"/>
-        <Field Name = "VarDictBase" Type = "dict:int:string" Des = "基础类型字典" Group = "d"/>
-        <Field Name = "VarDictEnum" Type = "dict:long:CardElement" Des = "枚举类型字典" Group = "d"/>
-        <Field Name = "VarDictClass" Type = "dict:string:SingleClass" Des = "类类型字典" Group = "d"/>
+<Namespace Name = "Cfg.AllType">
+    <Class Name = "AllClass"  Index = "ID" DataPath="Data所有Class类型.xlsx" Desc = "所有类型">
+        <Const Name = "ConstString" Type = "string" Value = "Hello World" Desc = "常量字符串" />
+        <Const Name = "ConstFloat" Type = "float" Value = "3.141527" Desc = "常量浮点值" />
+        <Field Name = "ID" Type = "int" Desc = "ID" Group = "Client" />
+        <Field Name = "Index" Type = "int" Desc = "Test.TID"  Group = "Client"/><!--Ref="Test"-->
+        <Field Name = "VarLong" Type = "long" Desc = "长整型" Group = "Client"/>
+        <Field Name = "VarFloat" Type = "float" Desc = "浮点型" Group = "Client"/>
+        <Field Name = "VarString" Type = "string" Desc = "字符串" Group = "Client"/><!--  RefPath = "../../Resources/*.txt"/> -->
+        <Field Name = "VarBool" Type = "bool" Desc = "布尔型" Group = "Client"/>
+        <Field Name = "VarEnum" Type = "CardElement" Desc = "枚举类型" Group = "Client"/>
+        <Field Name = "VarClass" Type = "SingleClass" Desc = "类类型" Group = "Client"/>
+        <Field Name = "VarListBase" Type = "list:string" Desc = "字符串列表" Group = "Client"/>
+        <Field Name = "VarListClass" Type = "list:SingleClass" Desc = "Class列表" Group = "Client"/>
+        <Field Name = "VarListCardElem" Type = "list:string" Desc = "字符串列表" Group = "Client"/>
+        <Field Name = "VarDictBase" Type = "dict:int:float" Desc = "基础类型字典" Group = "Client"/>
+        <Field Name = "VarDictEnum" Type = "dict:long:CardElement" Desc = "枚举类型字典" Group = "Client"/>
+        <Field Name = "VarDictClass" Type = "dict:string:SingleClass" Desc = "类类型字典" Group = "Client"/>
     </Class>
 
 	<Class Name = "SingleClass">
-        <Field Name = "Var1" Type = "string" Des = "Var1" />
-        <Field Name = "Var2" Type = "float" Des = "Var2" />
+        <Field Name = "Var1" Type = "string" Desc = "Var1" />
+        <Field Name = "Var2" Type = "float" Desc = "Var2" />
     </Class>
 	
 	<Class Name = "M1" Inherit = "SingleClass">
-		<Field Name = "V3" Type = "long" Des = "继承1"/>
+		<Field Name = "V3" Type = "long" Desc = "继承1"/>
 	</Class>
 	<Class Name = "M2" Inherit = "SingleClass">
-		<Field Name = "V4" Type = "bool" Des = "继承2"/>
+		<Field Name = "V4" Type = "bool" Desc = "继承2"/>
 	</Class>
 	
-    <Enum Name="CardElement">
+	<Class Name = "Test" Index = "TID" DataPath="Test.xlsx">
+		<Field Name = "TID" Type = "int" Desc = "继承2"/>
+		<Field Name = "Name" Type = "string" Desc = "继承2"/>
+	</Class>
+	
+    <Enum Name="CardElement" Desc="卡牌枚举">
         <Const Name = "Attack" Value = "0" Alias="攻击"/>
         <Const Name = "Extract" Value = "1" Alias="抽牌"/>
         <Const Name = "Renounce" Value = "2" Alias="弃牌"/>
@@ -41,6 +47,6 @@
         <Const Name = "Brary" Value = "8" Alias="牌库"/>
         <Const Name = "Handack" Value = "9" Alias="手牌攻击"/>
     </Enum>
-</Define>
+</Namespace>
 
 

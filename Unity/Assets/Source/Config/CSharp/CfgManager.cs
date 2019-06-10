@@ -16,6 +16,8 @@ namespace Cfg
 		
 		public static readonly Dictionary<int, Cfg.AllType.AllClass> AllClass = new Dictionary<int, Cfg.AllType.AllClass>();
 		public static readonly Dictionary<int, Cfg.AllType.Test> Test = new Dictionary<int, Cfg.AllType.Test>();
+		public static readonly Dictionary<string, Cfg.Character.Model> Model = new Dictionary<string, Cfg.Character.Model>();
+		public static readonly Dictionary<string, Cfg.Skill.ActorConfig> ActorConfig = new Dictionary<string, Cfg.Skill.ActorConfig>();
 		
 		public static int _row;
 		/// <summary>
@@ -49,6 +51,12 @@ namespace Cfg
 				path = ConfigDir + "alltype/test.data";
 				var tests = Load(path, (d) => new Cfg.AllType.Test(d));
 				tests.ForEach(v => Test.Add(v.TID, v));
+				path = ConfigDir + "character/model.data";
+				var models = Load(path, (d) => new Cfg.Character.Model(d));
+				models.ForEach(v => Model.Add(v.Name, v));
+				path = ConfigDir + "skill/actorconfig.data";
+				var actorconfigs = Load(path, (d) => new Cfg.Skill.ActorConfig(d));
+				actorconfigs.ForEach(v => ActorConfig.Add(v.ModelName, v));
 			}
 			catch (Exception e)
 			{
@@ -60,6 +68,8 @@ namespace Cfg
 		{
 			AllClass.Clear();
 Test.Clear();
+Model.Clear();
+ActorConfig.Clear();
 		}
 		
 	}

@@ -6,6 +6,7 @@ return {
     FixedUpdateEvent = Event.NewSimple("FixedUpdate"),
     DestroyEvent = Event.NewSimple("Destroy"),
 
+    --- 通知事件
     NotifyEvent = Event.New("Notify"),
-    SystemEvent = Event.New("System"),
+    --SystemEvent = Event.New("System"),
 }

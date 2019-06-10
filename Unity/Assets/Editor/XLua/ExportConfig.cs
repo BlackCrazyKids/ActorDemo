@@ -18,15 +18,6 @@ using Game;
 
 public static class ExportConfig
 {
-    [CSharpCallLua]
-    public static List<Type> LuaDelegates = new List<Type>()
-    {
-        typeof(Action),
-        typeof(Action<float>),
-        typeof(Action<float, float>),
-        typeof(Func<int>),
-    };
-
     [LuaCallCSharp]
     public static List<Type> LuaCallCSharp = new List<Type>()
     {
@@ -65,6 +56,34 @@ public static class ExportConfig
         typeof(Resources),
         typeof(Application),
         typeof(SleepTimeout),
+
+        //DOTween
+        typeof(DG.Tweening.AutoPlay),
+        typeof(DG.Tweening.AxisConstraint),
+        typeof(DG.Tweening.Ease),
+        typeof(DG.Tweening.LogBehaviour),
+        typeof(DG.Tweening.LoopType),
+        typeof(DG.Tweening.PathMode),
+        typeof(DG.Tweening.PathType),
+        typeof(DG.Tweening.RotateMode),
+        typeof(DG.Tweening.ScrambleMode),
+        typeof(DG.Tweening.TweenType),
+        typeof(DG.Tweening.UpdateType),
+        typeof(DG.Tweening.DOTween),
+        typeof(DG.Tweening.DOVirtual),
+        typeof(DG.Tweening.EaseFactory),
+        typeof(DG.Tweening.Tweener),
+        typeof(DG.Tweening.Tween),
+        typeof(DG.Tweening.Sequence),
+        typeof(DG.Tweening.TweenParams),
+        typeof(DG.Tweening.Core.ABSSequentiable),
+        typeof(DG.Tweening.Core.TweenerCore<Vector3, Vector3, DG.Tweening.Plugins.Options.VectorOptions>),
+        typeof(DG.Tweening.TweenCallback),
+        typeof(DG.Tweening.TweenExtensions),
+        typeof(DG.Tweening.TweenSettingsExtensions),
+        typeof(DG.Tweening.ShortcutExtensions),
+        typeof(DG.Tweening.DOTweenPath),
+
 
         typeof(Collider),
         typeof(BoxCollider),
@@ -128,6 +147,7 @@ public static class ExportConfig
         typeof(ConstSetting),
         typeof(LuaHelper),
         typeof(GameManager),
+        typeof(AtlasManager),
         typeof(LuaManager),
         typeof(ResourceManager),
         typeof(ResourceLoadType),
@@ -140,7 +160,28 @@ public static class ExportConfig
 
     };
 
+    [CSharpCallLua]
+    public static List<Type> LuaDelegates = new List<Type>()
+    {
+        typeof(Action),
+        typeof(Action<float>),
+        typeof(Action<float, float>),
+        typeof(Func<int>),
+    };
     //自动把LuaCallCSharp涉及到的delegate加到CSharpCallLua列表，后续可以直接用lua函数做callback
+    static bool IsDefineType(Type type)
+    {
+        bool isExist = true;
+        Type[] ts = type.GetGenericArguments();
+        for (int i = 0; i < ts.Length; i++)
+        {
+            isExist = !string.IsNullOrEmpty(ts[i].FullName);
+            if (!isExist)
+                Debug.LogErrorFormat("{0}->{1}未明确指定的泛型类型!", type, ts[i]);
+        }
+
+        return isExist;
+    }
     [CSharpCallLua]
     public static List<Type> CSharpCallLua
     {
@@ -153,24 +194,18 @@ public static class ExportConfig
             foreach (var field in (from type in lua_call_csharp select type).SelectMany(type => type.GetFields(flag)))
             {
                 if (typeof(Delegate).IsAssignableFrom(field.FieldType))
-                {
                     delegate_types.Add(field.FieldType);
-                }
             }
 
             foreach (var method in (from type in lua_call_csharp select type).SelectMany(type => type.GetMethods(flag)))
             {
                 if (typeof(Delegate).IsAssignableFrom(method.ReturnType))
-                {
                     delegate_types.Add(method.ReturnType);
-                }
                 foreach (var param in method.GetParameters())
                 {
                     var paramType = param.ParameterType.IsByRef ? param.ParameterType.GetElementType() : param.ParameterType;
-                    if (typeof(Delegate).IsAssignableFrom(paramType))
-                    {
+                    if (typeof(Delegate).IsAssignableFrom(paramType) && IsDefineType(paramType))
                         delegate_types.Add(paramType);
-                    }
                 }
             }
             return delegate_types.Distinct().ToList();

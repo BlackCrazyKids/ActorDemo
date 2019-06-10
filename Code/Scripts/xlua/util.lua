@@ -25,7 +25,7 @@ local function async_to_sync(async_func, callback_pos)
             waiting = true
             rets = {coroutine.yield()}
         end
-
+        
         return unpack(rets)
     end
 end
@@ -93,6 +93,7 @@ local function auto_id_map()
                 end
                 --CS.XLua.HotfixDelegateBridge.Set(
             end
+            xlua.private_accessible(cs)
         else
             return org_hotfix(cs, field, func)
         end
@@ -128,10 +129,10 @@ end
 
 -- description: 直接用C#函数创建delegate
 local function createdelegate(delegate_cls, obj, impl_cls, method_name, parameter_type_list)
-    local flag = enum_or_op_ex(CS.System.Reflection.BindingFlags.Public, CS.System.Reflection.BindingFlags.NonPublic,
-            CS.System.Reflection.BindingFlags.Instance, CS.System.Reflection.BindingFlags.Static)
+    local flag = enum_or_op_ex(CS.System.Reflection.BindingFlags.Public, CS.System.Reflection.BindingFlags.NonPublic, 
+        CS.System.Reflection.BindingFlags.Instance, CS.System.Reflection.BindingFlags.Static)
     local m = parameter_type_list and typeof(impl_cls):GetMethod(method_name, flag, nil, parameter_type_list, nil)
-            or typeof(impl_cls):GetMethod(method_name, flag)
+             or typeof(impl_cls):GetMethod(method_name, flag)
     return CS.System.Delegate.CreateDelegate(typeof(delegate_cls), obj, m)
 end
 

@@ -6,6 +6,7 @@ using System.Net;
 using System.Text;
 using System.Threading;
 using UnityEngine;
+using UnityEngine.Networking;
 
 namespace Game
 {
@@ -13,7 +14,7 @@ namespace Game
     /// 游戏热更新管理器
     /// 注:必须在资源管理器初始化完毕,确保能加载AB资源
     /// </summary>
-    public partial class UpdateManager : IManager
+    public partial class UpdateManager : Manager
     {
         public int LocalResVersion { get { return _localResVersion; } }
         public int LocalAppVersion { get { return _localAppVersion; } }
@@ -51,7 +52,7 @@ namespace Game
         private HashSet<string> _hasDownload = new HashSet<string>();
         private List<Thread> _threads = new List<Thread>();
 
-        private string _urlRoot = "http://localhost:8081/";
+        private string _url = "http://localhost:8081/";
         private readonly object _obj = new object();
         private readonly int _threadNum = 5;
         private int _overThreadNum;
@@ -66,14 +67,14 @@ namespace Game
         private bool _downloadOver = true;
         public bool HasdownloadFile { get { return File.Exists(string.Format("{0}/../{1}", Util.DataPath, ConstSetting.HasDownloadFile)); } }
 
-        public void Init()
+        public override void Init()
         {
             _resMD5FileRelPath = "../" + ConstSetting.ResMD5File;
             _resVersionFileRelPath = "../" + ConstSetting.ResVersionFile;
             _hasDownloadFileRelPath = "../" + ConstSetting.HasDownloadFile;
         }
 
-        public void Dispose()
+        public override void Dispose()
         {
             _downloadList.Clear();
             _redownloadList.Clear();
@@ -109,7 +110,7 @@ namespace Game
             _downloadOver = false;
             for (int i = 0; !_downloadOver && i < Client.ServerMgr.UpdateResServer.Count; i++)
             {
-                _urlRoot = Client.ServerMgr.UpdateResServer[i];
+                _url = Client.ServerMgr.UpdateResServer[i];
                 yield return DwonloadRemoteVersion();
                 Launcher.Ins.SetLaunchState(LaunchState.CheckVersion, 0.3f + i * 0.1f);
             }
@@ -137,7 +138,7 @@ namespace Game
             _downloadOver = false;
             for (int i = 0; !_downloadOver && i < Client.ServerMgr.UpdateResServer.Count; i++)
             {
-                _urlRoot = Client.ServerMgr.UpdateResServer[i];
+                _url = Client.ServerMgr.UpdateResServer[i];
                 yield return DwonloadRemoteMD5Table();
             }
             if (!_downloadOver)
@@ -187,16 +188,16 @@ namespace Game
             Debug.LogFormat("Begin Download Assets Time = {0}", Time.realtimeSinceStartup);
             for (int i = 0; !_downloadOver && i < Client.ServerMgr.UpdateResServer.Count; i++)
             {
-                _urlRoot = Client.ServerMgr.UpdateResServer[i];
+                _url = Client.ServerMgr.UpdateResServer[i];
                 _taskQueue.Clear();
                 _redownloadList.Clear();
                 for (int j = 0; j < _downloadList.Count; j++)
                 {
                     string file = _downloadList[j];
-                    string url = GetRemotePath(file);
+                    string uri = GetRemotePath(file);
                     var remoteInfo = _remoteMD5Table[file];
-                    url += "?version=" + remoteInfo.MD5;
-                    DownloadTask task = new DownloadTask(url, remoteInfo, this);
+                    uri += "?version=" + remoteInfo.MD5;
+                    DownloadTask task = new DownloadTask(uri, remoteInfo, this);
                     _taskQueue.Enqueue(task);
                 }
 
@@ -229,7 +230,6 @@ namespace Game
                     Debug.Log("End Download Assets Time = " + Time.realtimeSinceStartup);
                     _downloadOver = true;
                     //下载完毕
-
                     Launcher.Ins.SetLaunchState(LaunchState.DownloadHotfixRes, 1f);
                     break;
                 }
@@ -292,14 +292,15 @@ namespace Game
 
         string GetRemotePath(string file)
         {
-#if UNITY_ANDROID
-            string path = string.Format("{0}Android/Data/{1}", _urlRoot, file);
-#elif UNITY_IPHONE
-            string path = string.Format("{0}IOS/Data/{1}", _urlRoot, file);
-#elif GAME_SIMULATION
-            string path = string.Format("{0}PC/Data/{1}", _urlRoot, file);
-#elif UNITY_EDITOR && !GAME_SIMULATION
             string path = "";
+#if UNITY_ANDROID
+            path = string.Format("{0}Android/Data/{1}", _url, file);
+#elif UNITY_IPHONE
+            path = string.Format("{0}IOS/Data/{1}", _url, file);
+#elif GAME_SIMULATION
+            path = string.Format("{0}PC/Data/{1}", _url, file);
+#elif UNITY_EDITOR && !GAME_SIMULATION
+            path = "";
 #endif
             return path;
         }
@@ -371,8 +372,10 @@ namespace Game
         void CollectDownloadList()
         {
             _downloadList.Clear();
-            foreach (var key in _remoteMD5Table.Keys)
+            var iter = _remoteMD5Table.Keys.GetEnumerator();
+            while (iter.MoveNext())
             {
+                string key = iter.Current;
                 AssetInfo info = null;
                 _localMD5Table.TryGetValue(key, out info);
                 if (info != null)
@@ -384,7 +387,6 @@ namespace Game
                 _downloadList.Add(key);
                 _totalDownloadSize += _remoteMD5Table[key].Size;
             }
-
             _downloadOver = _downloadList.Count == 0;
             Debug.LogFormat("DownloadList Count = {0}, Size = {1:F2} MB", _downloadList.Count, _totalDownloadSize / 1024f / 1024f);
         }

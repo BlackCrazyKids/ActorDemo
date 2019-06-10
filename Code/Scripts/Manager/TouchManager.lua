@@ -31,7 +31,7 @@
 
 local pairs = pairs
 
-TouchManger = Class:new("TouchProxy");
+TouchManger = Class:new();
 local M = TouchManger;
 
 TouchType = {

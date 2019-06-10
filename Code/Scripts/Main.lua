@@ -29,8 +29,6 @@ local function Init()
     --Util.Myxpcall(UIMgr.Show, 'MJoystick.DlgJoystick')
 	
     Util.Myxpcall(TEST)
-    --local demo = require "UIExample.UIDemo"
-    --Util.Myxpcall(demo.Init, demo)
 end
 
 --逻辑update
@@ -59,21 +57,23 @@ end
 ---------------------- 测试 ----------------------------
 
 function TEST()
-    --local Filter = require('Core.Filter')
-    --local f1 = Filter:new()
-    --local f2 = Filter:new()
-    --f1:All(2, 1, 3)
-    --f1:None(4)
-    --f1:Any(5)
-    --f2:All(1, 2, 3, f2:None(4), f2:Any(5))
-    --f2:Init()
-    --f1:Init()
-    --printyellow(f1.hashCode , f2.hashCode)
-    --local func = function(timer)
-    --    print('Time - ', Time.time, timer.loop)
+    --local pb = require "pb"
+    --local protoc = require "protoc"
+    --assert(protoc:load([[
+    --    message Phone {
+    --      optional string name        = 1;
+    --      optional int64  phonenumber = 2;
+    --    }
+    --    message Person {
+    --      optional string name     = 1;
+    --      optional int32  age      = 2;
+    --      optional string address  = 3;
+    --      repeated Phone  contacts = 4;
+    --    }
+    --    ]]))
+    --for name, basename, type in pb.types() do
+    --    print(name, basename, type)
     --end
-    --local timer = Timer:new(func, 1, 5)
-    --timer:Start()
 end
 
 Main = {

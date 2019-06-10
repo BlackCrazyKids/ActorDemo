@@ -8,6 +8,9 @@ namespace Game
     /// </summary>
     public class NetworkChannelHelper
     {
+        /// <summary>
+        /// 固定包头长度
+        /// </summary>
         public virtual int HeaderLength
         {
             get { return 8; }

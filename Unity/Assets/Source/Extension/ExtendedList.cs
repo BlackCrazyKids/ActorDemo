@@ -12,7 +12,7 @@ public static class ExtendedList
     /// <param name="list">集合</param>
     /// <param name="split">分隔符</param>
     /// <returns></returns>
-    public static string List2String<T>(List<T> list, string split)
+    public static string List2String<T>(this List<T> list, string split = "\r\n")
     {
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < list.Count - 1; i++)

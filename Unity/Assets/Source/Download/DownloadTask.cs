@@ -14,7 +14,7 @@ namespace Game
         {
             return string.Format("{0},{1},{2}", RelPath, MD5, Size);
         }
-    } 
+    }
 
     public partial class UpdateManager
     {
@@ -83,6 +83,7 @@ namespace Game
                         }
                         else
                         {
+                            Debug.LogFormat("Local MD5({0}) != Remote MD5({1})", md5, _remoteInfo.MD5);
                             _updater._redownloadList.Add(_remoteInfo.RelPath);
                         }
                     });
@@ -100,7 +101,6 @@ namespace Game
 
         private void AppendMd5File(AssetInfo remoteInfo)
         {
-           
             string file = Util.DataPath + _resMD5FileRelPath;
             try
             {

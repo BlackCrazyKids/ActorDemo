@@ -4,27 +4,21 @@ local format = string.format
 local match = string.match
 local insert = table.insert
 local loaded = package.loaded
-local trim = string.trim
-local copy = table.copy
 local clear = table.clear
+local print = print
 
 local Time = Time
 local Local = Local
 local ResMgr = ResMgr
-local Vector3 = Vector3
 local Util = Util
+local List = List
 local LuaHelper = LuaHelper
 local GameObject = GameObject
 local ConditionOp = ConditionOp
 local GameEvent = GameEvent
-local XUtil = XUtil
-local GRoot = GRoot
-local UIPackage = UIPackage
-local Stage = Stage
-
+local Define = Define
 local LogError = LogError
 local printt = printt
-local print = print
 local printyellow = printyellow
 local printmodule = printmodule
 local IsNull = IsNull
@@ -33,85 +27,73 @@ local ViewUtil = require "Common.ViewUtil"
 
 local LOAD_ING = 1              --正在加载中
 local LOAD_SUCC = 2             --加载成功
-local LAYER_UI = 20             --UI Layer层
-local UI_LOAD_TYPE = Define.ResourceLoadType.LoadBundleFromFile | Define.ResourceLoadType.ReturnAssetBundle -- www方式加载
---local DLG_LOADING_MASK = "DlgUILock"    -- 加载界面时锁UI,禁止一切操作
+local UI_LOAD_TYPE = Define.ResourceLoadType.LoadBundleFromFile
 local MAX_HIDE_VIEW_NUM = 0
+local HIDE_POSITION = Vector2(9999, 9999)
 
-local _views = {}
-local _stage = nil             -- 舞台对象
-local _isLocked = false        -- UI界面被锁,禁止一切操作
+local _views = { }
 local _callBackDestroyAllDlgs
+local _layout = {
+    [Define.UILayoutType.Backgroud] = nil,
+    [Define.UILayoutType.Normal] = nil,
+    [Define.UILayoutType.Pupop] = nil,
+}
+local _viewStack
+local _secondsTimer
+local _modalDlg
+local _loadingTip
 
-local NeedRefresh               --是否需要刷新
-local OnInit
-local DoShow
+local Show                      --开始显示
 local OnShow                    --页面显示回调
-local DoHide
+local Hide                      --开始隐藏
 local OnHide                    --页面隐藏回调
-local ShowLoadingLock           --显示加载中提示!
-local HideLoadingLock           --隐藏加载中提示!
+local HideOther                 --隐藏其他界面
+local ShowLoading               --显示加载中提示!
+local HideLoading               --隐藏加载中提示!
 
 local UIManager = {}
 local this = UIManager
-local secondTimer
-local pkgItems = {}
+
 
 --[[
-    注:问题
-        1.LuaWindow类缓存重复利用,直接再C#层完成!   --- 待测试
-        2.添加移除子对象后,子对象无法完整释放.[子对象应该已被缓存,后续有待集中释放]
-        3.Lua UI API提示功能
-        4.Timer 功能设计
+    1.模态窗口,遮罩界面通用.
+        a.多模态叠加时,上层遮罩颜色浅,下层深时,只能考虑多个遮罩层?
+        b.加载界面时的遮罩(提示加载中),禁止点击下层界面
 --]]
 
----#注:未完成功能
----#遮罩界面,避免对当前窗口后面物体进行交互
----#界面返回,至上一次界面
----窗口定义UIShowType函数指明显示类型
-UIShowType = {
-    Default = 1 << 0, --默认策略显示
-    Refresh = 1 << 1, --强制调用Show{执行Show,Refresh函数}
-    DestroyWhenHide = 1 << 2, --Hide时释放资源,默认隐藏不销毁资源,仅在资源销毁时调用
-    TabGroup = 1 << 3, --多界面切换组[树结构]..未完成
-    ReturnType = 1 << 4, --界面可回退到上一个界面[栈结构]..未完成
-}
 
 ---@class UIData
 local Data = {
-    base = nil,
-    script = nil,
+    gameObject = nil,
     fields = nil,
-    params = nil, -- 用于Show,Refresh传参
     fileName = nil, -- 界面名称/ab包资源名称
-    viewName = nil, -- 脚本相对UI路径名
+    viewName = nil, -- 脚本相对UI路径名,用于请求脚本
     status = nil,
-    loaded = nil,
+    needRefresh = nil,
+    params = nil, -- 用于Show,Refresh传参
     isShow = false,
+    hideTime = 0, -- 隐藏时刻
 
-    OnInit = OnInit, --  脚本对应事件 Init
-    DoShow = DoShow, --  脚本对应事件 DoShow
-    OnShow = OnShow, --  脚本对应事件 Show
-    DoHide = DoHide, --  脚本对应事件 DoHide
-    OnHide = OnHide, --  脚本对应事件 Hide
+    originPos = nil, -- 原始坐标,显示隐藏时调用
+    showType = nil,
+    layoutType = nil,
 }
 
 function UIManager.Init()
-    _stage = FindObj("Stage")
-    local list = { "Stage", "Stage Camera" }
-    for i = 1, #list do
-        local obj = FindObj(list[i])
-        if obj then
-            GameObject.DontDestroyOnLoad(obj)
-        end
-    end
-    UIConfig.globalModalWaiting = 'ui://Atlas_BaseSprite/DlgUILock'
+    local uiRoot = FindObj("/UIRoot").transform
+    _layout[Define.UILayoutType.Backgroud] = uiRoot:Find("Backgroud")
+    _layout[Define.UILayoutType.Normal] = uiRoot:Find("Normal")
+    _layout[Define.UILayoutType.Pupop] = uiRoot:Find("Pupop")
+    _viewStack = List:new()
+    _modalDlg = uiRoot:Find("Popup/ModalDlg")
+    _loadingTip = uiRoot:Find("Popup/LoadingTip").gameObject
+    _modalDlg.parent = _layout[Define.UILayoutType.Normal]
 
     GameEvent.UpdateEvent:Add(this.Update)
-    GameEvent.LateUpdateEvent:Add(this.LateUpdate)
+    --GameEvent.LateUpdateEvent:Add(this.LateUpdate)
     GameEvent.DestroyEvent:Add(this.Destroy)
-    secondTimer = Timer:new(this.SecondUpdate, 1, -1, false)
-    secondTimer:Start()
+    _secondsTimer = Timer:new(this.UnloadExpireView, 1, -1)
+    _secondsTimer:Start()
 end
 
 function UIManager.Destroy()
@@ -119,9 +101,6 @@ function UIManager.Destroy()
         this.DestroyView(name)
     end
     secondTimer = nil
-    for _, v in pairs(pkgItems) do
-        v:Dispose()
-    end
 end
 
 function UIManager.Update(dt)
@@ -131,47 +110,21 @@ function UIManager.Update(dt)
                 this.Call(viewName, "Update", dt)
             end
         end
-    end
-end
 
-function UIManager.LateUpdate()
-    for viewName, info in pairs(_views) do
-        if info.isShow then
-            if this.HasMethod(viewName, "LateUpdate") then
-                this.Call(viewName, "LateUpdate")
-            end
-        end
-
-        if info.needRefresh and NeedRefresh(viewName) then
-            if Local.Moduals.UIManager then
-                if info.refreshParams then
-                    printt(info.refreshParams, "[UIManager]LateUpdate Refresh " .. viewName)
-                else
-                    print("[UIManager]LateUpdate Refresh " .. viewName)
-                end
-            end
+        if info.needRefresh then
             info.needRefresh = false
             this.Call(viewName, "Refresh", info.params)
         end
     end
 end
 
-function UIManager.SecondUpdate(now)
-    this.UnloadExpireView(now)
-    for viewName, info in pairs(_views) do
-        if info.isShow and this.HasMethod(viewName, "SecondUpdate") then
-            this.Call(viewName, "SecondUpdate", now)
-        end
-    end
-end
-
-function UIManager.UnloadExpireView(now)
+function UIManager.UnloadExpireView()
     local unshowViewNum = 0
     local toDestroyViewName
-    local minHideTime = now
+    local minHideTime = Time.time
     for name, data in pairs(_views) do
-        if data ~= nil and data.status == LOAD_SUCC and not data.isShow and not this.IsPersistent(name) then
-            --and not this.IsInStack(name)
+        if data ~= nil and data.status == LOAD_SUCC and not data.isShow
+                and not this.IsPersistent(name) and not this.IsInStack(name) then
             unshowViewNum = unshowViewNum + 1
             if data.hideTime ~= nil and data.hideTime < minHideTime then
                 toDestroyViewName = name
@@ -180,7 +133,7 @@ function UIManager.UnloadExpireView(now)
         end
     end
     if toDestroyViewName and unshowViewNum > MAX_HIDE_VIEW_NUM then
-        --this.Destroy(toDestroyViewName)
+        this.DestroyView(toDestroyViewName)
     end
 end
 
@@ -188,17 +141,10 @@ function UIManager.GetViewData(viewName)
     ---@type UIData
     local data = _views[viewName]
     if not data then
-        data = {
-            isShow = false,
-            OnInit = OnInit,
-            DoShowTween = DoShow,
-            OnShow = OnShow,
-            DoHideTween = DoHide,
-            OnHide = OnHide,
-        }
-        local pkgName, fileName = match(viewName, "^(.*)%.(.*)$")
+        local _, fileName = match(viewName, "^(.*)%.(.*)$")
+        data = {}
+        data.isShow = false
         data.fileName = ConditionOp(fileName, fileName, viewName)
-        data.pkgName = pkgName
         data.viewName = viewName
         _views[viewName] = data
     end
@@ -220,7 +166,7 @@ end
 function UIManager.HasScript(viewName)
     return LuaHelper.HasScript(this.GetViewModule(viewName))
 end
----字段指变量和函数
+
 function UIManager.HasMethod(viewName, methodName)
     local view = this.GetViewModule(viewName)
     if not view then
@@ -291,7 +237,7 @@ function UIManager.GetUIShowType(viewName)
     return uishowtype
 end
 ---获取所有显示的窗口
-function UIManager.GetDlgsShow()
+function UIManager.GetViewsShow()
     local list = {}
     for name, data in pairs(_views) do
         if data.isShow then
@@ -301,12 +247,19 @@ function UIManager.GetDlgsShow()
     return list
 end
 function UIManager.IsPersistent(viewName)
-    return Local.UIPersistentMap[viewName] == true
+    return Local.UIPersistentMap[viewName] ~= nil
+end
+function UIManager.IsInStack(viewName)
+    return _viewStack[viewName] ~= nil
 end
 function UIManager.GetUIShowType(viewName)
-    local showType = UIShowType.Default
-    if (this.HasMethod(viewName, "UIShowType")) then
+    local data = this.GetViewData(viewName)
+    local showType = Define.UIShowType.Default
+    if data.showType then
+        return data.showType
+    elseif this.HasMethod(viewName, "UIShowType") then
         showType = this.CallWithReturn(viewName, "UIShowType")
+        data.showType = showType
     end
     return showType
 end
@@ -314,99 +267,37 @@ function UIManager.IsUIShowType(viewName, showType)
     local viewuishowtype = this.GetUIShowType(viewName)
     return (showType & viewuishowtype) > 0
 end
+function UIManager.GetLayoutType(viewName)
+    local data = this.GetViewData(viewName)
+    local layoutType = Define.UILayoutType.Normal
+    if data.layoutType then
+        return data.layoutType
+    elseif this.HasMethod(viewName, "UILayoutType") then
+        layoutType = this.CallWithReturn(viewName, "UILayoutType")
+        data.layoutType = layoutType
+    end
+    return layoutType
+end
 
 ---------------------------------------------
----普通窗口操作方法
+------------普通窗口操作方法
 ---------------------------------------------
-ShowLoadingLock = function(beginTime, endTime)
-    if _isLocked == true then
-        return
-    end
-
-    printmodule(Local.Moduals.UIManager, "[UIManager]ShowLoading Locked")
-    --local params = { beginTime = ConditionOp(beginTime, beginTime, 0.5), endTime = ConditionOp(endTime, endTime, 3) }
-    GRoot.inst:ShowModalWait()
-    --if this.IsShow(DLG_LOADING_MASK) then
-    --    this.Refresh(DLG_LOADING_MASK, params)
-    --else
-    --    this.Show(DLG_LOADING_MASK, params)
-    --end
+ShowLoading = function()
+    printmodule(Local.Moduals.UIManager, "[UIManager]ShowLoading")
+    _loadingTip:SetActive(true)
 end
-HideLoadingLock = function()
-    if _isLocked == true then
-        return
-    end
-    printmodule(Local.Moduals.UIManager, "[UIManager]HideLoading Locked")
-    GRoot.inst:CloseModalWait()
-    --this.Hide(DLG_LOADING_MASK)
+HideLoading = function()
+    printmodule(Local.Moduals.UIManager, "[UIManager]HideLoading")
+    _loadingTip:SetActive(false)
 end
----@param data UIData
-OnInit = function(data)
-    local viewName = data.viewName
-    ---@type Game.LuaWindow
-    local window = data.base
-    window:Center()
-    window.displayObject.gameObject.layer = LAYER_UI
-    if this.Call(viewName, "Init", { viewName, window, data.fields }) then
-        printmodule(Local.Moduals.UIManager, '[UIManager]OnInit ' .. viewName)
-    else
-        window:HideImmediately()
-    end
-end
----@param data UIData
-DoShow = function(data)
-    local viewName = data.viewName
-    ---@type Game.LuaWindow
-    local window = data.base
-    data.isShow = true
-    if this.Call(viewName, "DoShow", window.ShowImmediately) then
-        ---界面显示动画 ! 不知道什么时候结束
-        ---TODO
-    else
-        window:ShowImmediately()
-    end
-end
----@param data UIData
-OnShow = function(data)
-    local window, viewName, params = data.base, data.viewName, data.params
-    printmodule(Local.Moduals.UIManager, '[UIManager]OnShow ' .. viewName)
-    HideLoadingLock()
-
-    if this.Call(viewName, "Show", data.params) then
-        this.Refresh(viewName, params)
-    else
-        window:HideImmediately()
-    end
-end
----@param data UIData
-DoHide = function(data)
-    local viewName = data.viewName
-    ---@type Game.LuaWindow
-    local window = data.base
-    if this.HasMethod(viewName, "DoHide", window.HideImmediately) then
-        ---界面隐藏动画 ! 不知道什么时候结束
-        ---TODO
-    else
-        window:HideImmediately()
-    end
-end
----@param data UIData
-OnHide = function(data)
-    local viewName = data.viewName
-    printmodule(Local.Moduals.UIManager, '[UIManager]OnHide ' .. viewName)
-    if this.Call(viewName, "Hide") then
-        data.isShow = false
-        if this.IsUIShowType(viewName, UIShowType.DestroyWhenHide) then
-            this.DestroyView(viewName, "Destroy")
-        end
-    end
+local HideViewPos = function(transform)
+    transform.anchoredPosition = HIDE_POSITION
+    transform:SetAsLastSibling()
+    --transform.gameObject:SetActive(false)
 end
 
-NeedRefresh = function(viewName)
-    return this.IsShow(viewName) --or this.IsInStack(viewName)
-end
-
-function UIManager.Show(viewName, params)
+--- 加载或者直接显示已加载界面
+Show = function(viewName, params)
     if Local.Moduals.UIManager then
         if params then
             printt(params, '[UIManager]Show ' .. viewName)
@@ -415,196 +306,228 @@ function UIManager.Show(viewName, params)
         end
     end
     local data = this.GetViewData(viewName)
-    if data.isShow and not this.IsUIShowType(viewName, UIShowType.Refresh) then
+    if data.isShow then
         return
     end
     data.params = params
-    ShowLoadingLock(viewName)
-    local pkg = UIPackage.GetByName(data.pkgName)
-    if IsNull(pkg) and data.status ~= LOAD_SUCC then
-        if not data.loaded then
-            --print(format("view: %s %s", viewName, "be going to be loaded!\n"))
-            data.loaded = LOAD_ING
-            --ShowLoading()--显示界面加载提示界面
-            ResMgr:AddTask(format("ui/%s.bundle", data.pkgName), function(ab)
-                ---@type UnityEngine.AssetBundle
-                local asstbundle = ab
-                local viewCom = nil
-                if IsNull(asstbundle) then
-                    return
-                end
-                UIPackage.AddPackage(asstbundle)
-                viewCom = UIPackage.CreateObject(data.pkgName, data.fileName).asCom
-                if not viewCom then
-                    data.loaded = nil
-                    LogError(format("view %s fgui load fail!", viewName))
-                    return
-                end
-                ---@type Game.LuaWindow
-                local window = LuaWindow.Get()
-                window.contentPane = viewCom
-                window:ConnectLua(data)
-                data.base = window      -- LuaWindow
-                data.hideTime = 0       -- 脚本对象
-                data.isShow = true
-                data.status = LOAD_SUCC
-                data.fields = ViewUtil.ExportFields(viewCom)
-                window:Show()
-            end, UI_LOAD_TYPE)
-        end
+    if not data.status then
+        --print(format("view: %s %s", viewName, "be going to be loaded!\n"))
+        ShowLoading(viewName)-- 开启遮罩
+        data.status = LOAD_ING
+        ResMgr:AddTask(format("ui/%s.bundle", data.fileName), function(obj)
+            if IsNull(obj) then
+                HideLoading()-- 关闭遮罩:资源不存在
+                return
+            end
+            local layoutType = this.GetLayoutType(viewName)
+            local viewObj = GameObject.Instantiate(obj, _layout[layoutType])
+            GameObject.DontDestroyOnLoad(viewObj)
+            if not viewObj then
+                data.status = nil
+                LogError(format("View %s prefab load fail!", viewName))
+                HideLoading()-- 关闭遮罩:无法实例化
+                return
+            end
+            data.status = LOAD_SUCC
+            data.gameObject = viewObj
+            data.transform = viewObj.transform
+            data.fields = ViewUtil.ExportFields(viewObj)
+            data.originPos = viewObj.transform.anchoredPosition
+            viewObj.transform:SetAsFirstSibling()
+            --viewObj:SetActive(true)
+
+            if this.Call(viewName, "Init", { viewName, viewObj, data.fields })
+                    and this.Call(viewName, "Show", params) then
+                printmodule(Local.Moduals.UIManager, '[UIManager]OnInit ' .. viewName)
+                OnShow(data)
+            else
+                HideViewPos(viewObj.transform)
+            end
+            HideLoading()-- 关闭遮罩:界面加载和初始化完毕
+        end, UI_LOAD_TYPE)
         return
     end
 
-    local viewCom = pkg:CreateObject(data.fileName).asCom
-    local window = LuaWindow.Get()
-    window.contentPane = viewCom
-    window:ConnectLua(data)
-    data.base = window      -- LuaWindow
-    data.hideTime = 0       -- 脚本对象
+    data.transform.anchoredPosition = data.originPos
+    data.transform:SetAsFirstSibling()
+    --data.gameObject:SetActive(true)
+    if this.Call(viewName, "Show", params) then
+        OnShow(data)
+    else
+        HideViewPos(data.transform)
+    end
+end
+---@param data UIData
+OnShow = function(data)
+    local viewName, params = data.viewName, data.params
     data.isShow = true
-    data.status = LOAD_SUCC
-    data.fields = ViewUtil.ExportFields(viewCom)
-    window:Show()
+    printmodule(Local.Moduals.UIManager, '[UIManager]OnShow ' .. viewName)
+    if this.HasScript(viewName) then
+        this.Refresh(viewName, params)
+    end
 end
----所有类型的窗口均可关闭[默认]
-function UIManager.ShowAndCloseOther(viewName, params)
+Hide = function(viewName)
+    printmodule(Local.Moduals.UIManager, "[UIManager]Hide", viewName)
+    local data = this.GetViewData(viewName)
+    if not data.isShow then
+        --printyellow(format("view:%s not show!", viewName))
+        return
+    end
+    OnHide(data)
+end
+---@param data UIData
+OnHide = function(data)
+    local viewName, transform = data.viewName, data.transform
+    printmodule(Local.Moduals.UIManager, '[UIManager]OnHide ' .. viewName)
+    if this.Call(viewName, "Hide") then
+        data.isShow = false
+        data.hideTime = Time.time
+        HideViewPos(transform)
+        if this.IsUIShowType(viewName, UIShowType.DestroyWhenHide) then
+            this.DestroyView(viewName)
+        end
+    end
+end
+HideOther = function(viewName)
+    for name in pairs(_views) do
+        if name ~= viewName then
+            Hide(viewName)
+        end
+    end
+end
 
-end
 function UIManager.Refresh(viewName, params)
     printmodule(Local.Moduals.UIManager, "[UIManager]Refresh", viewName)
-    if NeedRefresh(viewName) then
+    if this.IsShow(viewName) then
         local data = this.GetViewData(viewName)
         data.needRefresh = true
         data.params = params
     end
 end
 function UIManager.IfShowThenCall(viewName, methodName, params)
+    printmodule(Local.Moduals.UIManager, "[UIManager]IfShowThenCall", viewName)
     if this.IsShow(viewName) then
         this.Call(viewName, methodName, params)
     end
 end
-function UIManager.Hide(viewName)
-    printmodule(Local.Moduals.UIManager, "[UIManager]Hide", viewName)
-    local data = this.GetViewData(viewName)
-    data.hideTime = Time.time
-    if not data.isShow then
-        print(format("view:%s not show!", viewName))
-        return
+function UIManager.HideAll()
+    for viewName in pairs(_views) do
+        Hide(viewName)
     end
-
-    ---@type Game.LuaWindow
-    local window = data.base
-    window:Hide()
-end
-function UIManager.HideImmediate(viewName)
-    printmodule(Local.Moduals.UIManager, "[UIManager]HideImmediate", viewName)
-    local data = this.GetViewData(viewName)
-    data.hideTime = Time.time
-    if not data.isShow then
-        print(format("view:%s not show!", viewName))
-        return
-    end
-    ---@type Game.LuaWindow
-    local window = data.base
-    window:HideImmediately()
 end
 function UIManager.DestroyView(viewName)
     local data = this.GetViewData(viewName)
     if data.isShow then
-        this.HideImmediate(viewName)
+        Hide(viewName)
     end
 
-    ---@type Game.LuaWindow
-    local window = data.base
-    if not window then
-        _views[viewName] = nil
-        return
-    end
     this.Call(viewName, "Destroy")
-    data.base = nil
-    --clear(data)
+    GameObject.Destroy(data.gameObject)
+    clear(data.fields)
+    data.fields = nil
     _views[viewName] = nil
-    assert(loaded[this.GetModuleName(viewName)])
+    --assert(loaded[this.GetModuleName(viewName)])
     loaded[this.GetModuleName(viewName)] = nil
-    if window then
-        window:Dispose()
-    end
-end
-function UIManager.HideAll()
-    GRoot.inst:CloseAllWindows()
-    for viewName, data in pairs(_views) do
-        data.hideTime = Time.time
-        if this.Call(viewName, "Hide") then
-            data.isShow = false
-            if this.IsUIShowType(viewName, UIShowType.DestroyWhenHide) then
-                this.DestroyView(viewName, "Destroy")
-            end
-        end
-    end
 end
 function UIManager.RegistCallBackDestroyAllDlgs(callback)
     printt(_callBackDestroyAllDlgs, "RegistCallBackDestroyAllDlgs")
     _callBackDestroyAllDlgs = callback
 end
 function UIManager.DestroyAllDlgs()
-    local list = this.GetDlgsShow()
+    local list = this.GetViewsShow()
     local d = false
     for _, name in pairs(list) do
         d = false
         for _, persistentName in pairs(Local.UIPersistentMap) do
             if name == persistentName then
-                this.Hide(name)
+                Hide(name)
                 d = true
                 break
             end
         end
     end
-    --_dialogStack:Clear()
+    if _viewStack then
+        _viewStack:Clear()
+    end
     if _callBackDestroyAllDlgs then
         _callBackDestroyAllDlgs()
         _callBackDestroyAllDlgs = nil
     end
 end
-function UIManager.GetPkgItem(viewName, item)
-    local data = this.GetViewData(viewName)
-    local comp = UIPackage.CreateObject(data.pkgName, item)
-    insert(pkgItems, comp)
-    return comp
+
+function UIManager.ShowPanel(viewName, params)
+    local uishowType = this.GetUIShowType(viewName)
+    if (uishowType & Define.UIShowType.Default) > 0 then
+        Show(viewName, params)
+    elseif (uishowType & Define.UIShowType.ReturnType) > 0 then
+        if _viewStack.length > 0 then
+            local lastViewName = _viewStack:Pop()
+            if lastViewName == viewName then
+                return
+            end
+            Show(viewName, params)
+            Hide(lastViewName)
+        else
+            Show(viewName, params)
+            HideOther(viewName)
+        end
+        _viewStack:Push(viewName)
+    elseif (uishowType & Define.UIShowType.HideOther) > 0 then
+        Show(viewName, params)
+        HideOther(viewName)
+    end
+end
+function UIManager.HidePanel(viewName, params)
+    local uishowType = this.GetUIShowType(viewName)
+    if (uishowType & Define.UIShowType.Default) > 0 then
+        Hide(viewName)
+    elseif (uishowType & Define.UIShowType.ReturnType) > 0 then
+        if _viewStack.length == 0 then
+            printyellow(format('[UIManager]Hide a view[%s] that is not on the stack.', viewName))
+            this.ShowMainCityViews()
+            return
+        else
+            _viewStack:Pop()
+            this.ShowMainCityViews()
+        end
+    elseif (uishowType & Define.UIShowType.HideOther) > 0 then
+        Hide(viewName) -- 不显示之前隐藏的多个界面
+    end
+end
+function UIManager.ShowMainCityViews()
+    for i = 1, #Local.MainCityViews do
+        local viewName = Local.MainCityViews[i]
+        if not this.IsShow(viewName) then
+            Show(viewName)
+        end
+    end
+end
+function UIManager.HideMainCityViews()
+    for i = 1, #Local.MainCityViews do
+        local viewName = Local.MainCityViews[i]
+        if this.IsShow(viewName) then
+            Hide(viewName)
+        end
+    end
+end
+function UIManager.ShowPupop(viewName, params)
+    _modalDlg.gameObject:SetActive(true)
+    _modalDlg:SetAsFirstSibling()
+    Show(viewName, params)
+end
+function UIManager.HidePupop(viewName)
+    Hide(viewName)
+    local ramianView = _layout[Define.UILayoutType.Pupop].childCount - 2
+    if ramianView > 0 then
+        _modalDlg:SetSiblingIndex(ramianView - 1)
+    else
+        _modalDlg.gameObject:SetActive(false)
+    end
 end
 
 
 ---------------------------------------------------------------
--------------------------Tab界面组[树]
+----------------------------弹窗窗口设计[固定几种样式]
 ---------------------------------------------------------------
-
-
-
-
-
-
-
----------------------------------------------------------------
--------------------------界面返回功能[栈]
----------------------------------------------------------------
-
-
-
-
----------------------------------------------------------------
--------------------------弹窗窗口设计[固定几种样式]
----------------------------------------------------------------
---[[
-    警告提示
-    普通提示
---]]
-function UIManager.PopSystemTip(content)
-
-end
-function UIManager.PopFlyText(content)
-
-end
-function UIManager.ShowPopup(target, sender)
-    GRoot.inst:ShowPopup(target, sender, false)
-end
 
 return UIManager

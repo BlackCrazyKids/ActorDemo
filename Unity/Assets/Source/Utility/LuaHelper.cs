@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Profiling;
 using XLua;
 
 namespace Game
@@ -29,6 +30,14 @@ namespace Game
         public static void DestroyLauncherResource()
         {
             Launcher.Ins.Dispose();
+        }
+        public static void BeginSample(string name)
+        {
+            Profiler.BeginSample(name);
+        }
+        public static void EndSample()
+        {
+            Profiler.EndSample();
         }
     }
 }

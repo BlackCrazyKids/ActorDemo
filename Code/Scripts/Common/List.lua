@@ -3,7 +3,7 @@ local insert = table.insert
 local max = math.max
 
 ---@class List
-local List = Class:new("List")
+local List = Class:new()
 
 function List:ctor()
     self.length = 0

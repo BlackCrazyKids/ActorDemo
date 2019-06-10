@@ -5,17 +5,12 @@ using UnityEngine;
 
 namespace Game
 {
-    public class NetworkManager : IManager
+    public class NetworkManager : Manager
     {
-        public void Init()
-        {
-
-        }
-
         /// <summary>
         /// 关闭并清理网络管理器。
         /// </summary>
-        public void Dispose()
+        public override void Dispose()
         {
             IEnumerator iter = m_NetworkChannels.GetEnumerator();
             while (iter.MoveNext())

@@ -1,4 +1,4 @@
-<Define Namespace = "Ability">
+<Namespace Name ="Cfg.Ability">
     <Class Name = "Ability"  Index = "Name" DataPath="Config">
         <Field Name = "Name" Value = "string" Des = "技能名称" />
         <Field Name = "BaseClass" Value = "string" Des = "继承类型,默认ability(基类)" />
@@ -92,4 +92,4 @@
         <Const Name = "ABILITY_BEHAVIOR_POINT" Value = "4" Des = "技能将会在鼠标指定的位置释放" />
         <Const Name = "ABILITY_BEHAVIOR_AOE" Value = "5" Des = "范围型技能,将会显示技能释放的范围" />
     </Enum>
-</Define>
+</Namespace>

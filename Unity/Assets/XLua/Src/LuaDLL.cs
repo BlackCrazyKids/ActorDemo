@@ -595,10 +595,5 @@ namespace XLua.LuaDLL
             xlua_set_csharp_wrapper_caller(Marshal.GetFunctionPointerForDelegate(wrapper_caller));
         }
 #endif
-
-        [DllImport(LUADLL, CallingConvention = CallingConvention.Cdecl)]
-        public static extern int luaopen_rapidjson(System.IntPtr L);
-        [DllImport(LUADLL, CallingConvention = CallingConvention.Cdecl)]
-        public static extern int luaopen_pb(System.IntPtr L);
     }
 }

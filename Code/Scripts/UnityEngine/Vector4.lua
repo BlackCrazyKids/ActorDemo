@@ -190,8 +190,11 @@ Vector4.__unm = function(va)
 	return Vector4.New(-va.x, -va.y, -va.z, -va.w)
 end
 
-Vector4.__eq = function(va,vb)
-	local v = va - vb
+Vector4.__eq = function(a, b)
+	if a == nil or b == nil then
+		return false
+	end
+	local v = a - b
 	local delta = Vector4.SqrMagnitude(v)	
 	return delta < 1e-10
 end

@@ -1,4 +1,4 @@
-<Define Namespace = "Ability">
+<Namespace Name = "Cfg.Ability">
     <Class Name = "Event">
         <Field Name = "Name" Value = "string" Des = "事件名称" />
         <Field Name = "Actions" Value = "list:Action" Des = "操作列表" />
@@ -62,4 +62,4 @@
         <Field Name = "Delay" Value = "float" Des = "延迟时间" />
         <Field Name = "Actions" Value = "list:Action" Des = "操作列表" />
     </Class>
-</Define>
+</Namespace>

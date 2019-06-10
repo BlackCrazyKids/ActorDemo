@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Game
 {
-    public class SoundManager : IManager
+    public class SoundManager : Manager
     {
         public static SoundManager Instance
         {
@@ -18,11 +18,11 @@ namespace Game
         static SoundManager _instance;
         protected SoundManager() { }
 
-        public void Init()
+        public override void Init()
         {
 
         }
-        public void Dispose()
+        public override void Dispose()
         {
              
         }

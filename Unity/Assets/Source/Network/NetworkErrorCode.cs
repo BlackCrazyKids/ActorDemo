@@ -8,7 +8,7 @@
         /// <summary>
         /// 地址族错误。
         /// </summary>
-        AddressFamilyError,
+        AddressFamilyError = -999,
 
         /// <summary>
         /// Socket 错误。

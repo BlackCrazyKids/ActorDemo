@@ -12,9 +12,6 @@ local _isLoading = false
 local _mapId
 local _sceneName
 
-local EVENT_LOAD_SCENE_START = "LoadScene_Start"
-local EVENT_LOAD_SCENE_END = "LoadScene_End"
-
 ----------------------------------------------------
 -----------加载场景方法
 ----------------------------------------------------
@@ -31,7 +28,7 @@ end
 local function OnLoad(sceneName, callback)
     --加载/配置场景相关参数
     --隐藏销毁进度条dlgloading
-    GameEvent.NotifyEvent:Trigger(EVENT_LOAD_SCENE_END, { sceneName = sceneName })
+    GameEvent.NotifyEvent:Trigger(Define.LoadSceneType.LoadSceneEnd, { sceneName = sceneName })
     _isLoading = false
 
     if callback then
@@ -57,7 +54,7 @@ function SceneManager.LoadScene(sceneName, views, callback)
     --显示加载进度条dlgloading
     _isLoading = true
     UIMgr.DestroyAllDlgs()
-    GameEvent.NotifyEvent:Trigger(EVENT_LOAD_SCENE_START, { sceneName = sceneName })
+    GameEvent.NotifyEvent:Trigger(Define.LoadSceneType.LoadSceneStart, { sceneName = sceneName })
     Mgr:RegisteOnSceneLoadFinish(function(result)
         if result then
             LuaGC()

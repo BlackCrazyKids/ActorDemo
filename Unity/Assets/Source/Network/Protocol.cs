@@ -6,6 +6,9 @@ using System.Text;
 using UnityEngine;
 namespace Game
 {
+    /// <summary>
+    /// 协议数据包,用于存储收发数据
+    /// </summary>
     public struct Protocol
     {
         public int Type

@@ -7,65 +7,78 @@ class 字段顺序排列,则数据在json中也顺序排列
 local Json = require('rapidjson')
 local pb = require "pb"
 local protoc = require "protoc"
+local format = string.format
 local Event = Event
 local GameEvent = GameEvent
+local Protocol = Protocol
+
 ---@type Game.NetworkManager
 local NetworkMgr = Game.Manager.NetworkMgr
-
----@class NetworkManager
-local NetworkManager = {}
-local networkEvt = Event.NewSimple('NetworkEvent')
 ---@type Game.NetworkChannel
 local channel
 
+---@class NetworkManager
+local NetworkManager = {}
+local networkEvt = Event.New('NetworkEvent')
+--local ip = "192.168.50.90"
+local ip = "192.168.0.132"
+local port = 8686
+
 ---@param channel Game.NetworkChannel
 local onChannelConnected = function(channel)
-    printcolor('orange', channel.Name .. "正常连接到服务器",
+    printcolor('orange', channel.Name .. "Normal connection to the server.",
             channel.RemoteIPAddress, channel.RemotePort)
 end
 ---@param channel Game.NetworkChannel
 local onChannelClosed = function(channel)
-    printcolor('orange', channel.Name .. "Channel Closed")
+    printcolor('orange', channel.Name .. "Channel Closed.")
 end
 ---@param channel Game.NetworkChannel
 ---@param count number
 local onMissHeartBeat = function(channel, count)
     printcolor('orange', channel.Name .. 'Miss Heart Beat', count)
 end
-local onProtocolError = function(msg)
-
-end
----@param type int
+---@param id int
 ---@param msg byte[]
-local onReceive = function(type, data)
-    local msg = pb.decode("Person", data)
-    printyellow(dump(msg, 'Person'))
+local Receive = function(id, data)
+    local name = Protocol[id]
+    local msg = pb.decode(name, data)
+    if networkEvt.eventMap[id] then
+        printmodule(Local.LogProtocol, dump(msg, format("[Recevie]%s:%s", name, id), 10))
+        networkEvt:Trigger(id, msg)
+    else
+        printmodule(Local.LogProtocol, dump(msg, format("[Recevie]%s:%s - No events can start!", name, id), 10))
+    end
 end
-
-local function SecondUpdate()
-
-end
-
---local ip = "192.168.50.90"
-local ip = "192.168.0.132"
-local port = 8686
 
 function NetworkManager.Init()
+    local descriptor = require("Protocol.Descriptor")
+    assert(protoc:load(descriptor))
+    for name, id in pairs(Protocol) do
+        Protocol[id] = name
+    end
+    Message.__send = NetworkManager.Send
+
     channel = NetworkMgr:CreateNetworkChannel("NetworkChannel")
-    channel.NetworkReceive = onReceive
+    channel.NetworkReceive = Receive
     channel.NetworkChannelConnected = onChannelConnected
     channel.NetworkChannelClosed = onChannelClosed
     channel.NetworkChannelMissHeartBeat = onMissHeartBeat
     channel:Connect(ip, port)
-
-    local secondTimer = Timer:new(SecondUpdate, 1, -1, false)
-    secondTimer:Start()
 end
-
+---@param type number
 ---@param msg table
-function NetworkManager.Send(type, msg)
-    local encode = pb.encode("Person", msg)
-    channel:Send(type, encode)
+function NetworkManager.Send(id, msg)
+    local name = Protocol[id]
+    local encode = pb.encode(name, msg)
+    channel:Send(id, encode)
+    printmodule(Local.LogProtocol, dump(msg, format("[Send]%s:%s", name, id), 10))
+end
+function NetworkManager.AddListener(id, handle)
+    networkEvt:Add(id, handle)
+end
+function NetworkManager.RemoveListener(id, handle)
+    networkEvt:Remove(id, handle)
 end
 
 function NetworkManager.Destroy()

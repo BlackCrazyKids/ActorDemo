@@ -1,4 +1,4 @@
-<Define Namespace = "Skill">
+<Namespace Name = "Cfg.Skill">
     <!-- 动作配置 -->
     <Class Name = "ActorConfig"  Index = "ModelName" DataPath="ActorCfg">
         <Field Name = "ModelName" Type = "string" Des = "模型名称" />        
@@ -45,11 +45,11 @@
 	<Class Name = "HitZone">
         <Field Name = "Id" Type = "int" Des = "打击区域id" />
         <Field Name = "Sharp" Type = "HitSharpType" Des = "打击范围的形态，0：方盒，1:圆柱,2:球" />
-		<Field Name = "Offset" Type = "Vector3" Des = "坐标偏移量"/>								        
+		<Field Name = "Offset" Type = "Cfg.Vector3" Des = "坐标偏移量"/>								        
         <Field Name = "MaxNum" Type = "int" Des = "最大数量" />
     </Class>
 	<Class Name = "CubeZone" Inherit = "HitZone">
-		<Field Name = "Scale" Type = "Vector3" Des = "方盒缩放大小"/>
+		<Field Name = "Scale" Type = "Cfg.Vector3" Des = "方盒缩放大小"/>
 	</Class>
 	<Class Name = "SphereZone" Inherit = "HitZone">
 		<Field Name = "Radius" Type = "float" Des = "球半径"/>
@@ -85,13 +85,13 @@
 	</Class>
 	<Class Name = "ReplaceObject" Inherit = "Controller">单帧触发
 		<Field Name = "NewObject" Type = "string" Des = "新对象"/>
-		<Field Name = "Offset" Type = "Vector3" Des = "相对位置"/>
-		<Field Name = "EulerAngles" Type = "Vector3" Des = "相对旋转"/>
+		<Field Name = "Offset" Type = "Cfg.Vector3" Des = "相对位置"/>
+		<Field Name = "EulerAngles" Type = "Cfg.Vector3" Des = "相对旋转"/>
 	</Class>
 	<Class Name = "Move" Inherit = "Controller">	
 		<Field Name = "Type" Type = "MoveType" Des = "移动方式:0向目标移动 1按指定方向移动"/>		
 		<Field Name = "IsRelateSelf" Type = "bool" Des = "是否相对于自己移动"/>
-		<Field Name = "Offset" Type = "Vector3" Des = "起始位置相对目标偏移" />
+		<Field Name = "Offset" Type = "Cfg.Vector3" Des = "起始位置相对目标偏移" />
 		<Field Name = "Angle" Type = "float" Des = "Y轴顺时针旋转角度"/>
 		<Field Name = "Speed" Type = "float" Des = "位移速度m/s"/>	
 	</Class>	
@@ -99,8 +99,8 @@
 	    <Field Name = "IsTraceTarget" Type = "bool" Des = "是否追踪目标" />
         <Field Name = "CurveId" Type = "int" Des = "飞行参数ID,数据有配置表" />
         <Field Name = "PassBody" Type = "bool" Des = "是否穿透" />
-        <Field Name = "Position" Type = "Vector3" Des = "投射起始偏移" />
-		<Field Name = "EulerAngles" Type = "Vector3" Des = "投射起始旋转角度" />
+        <Field Name = "Position" Type = "Cfg.Vector3" Des = "投射起始偏移" />
+		<Field Name = "EulerAngles" Type = "Cfg.Vector3" Des = "投射起始旋转角度" />
         <!-- <Field Name = "CasterBindType" Type = "BindType" Des = "释放者释放绑定位置" /> -->
         <!-- <Field Name = "TargetBindType" Type = "BindType" Des = "被击者受击绑定位置" /> -->
 	</Class>
@@ -110,9 +110,9 @@
 		<Field Name = "IsRelateSelf" Type = "bool" Des = "是否相对于自己移动"/>
         <Field Name = "FollowDir" Type = "bool" Des = "特效是否始终跟随目标对象方向变化" />
 		<Field Name = "NodeName" Type = "string" Des = "节点名称,如果有配置则绑定到节点局部空间;反之绑定世界空间" /> 		
-        <Field Name = "Position" Type = "Vector3" Des = "特效结点偏移;特效世界偏移" />
-        <Field Name = "EulerAngles" Type = "Vector3" Des = "特效结点旋转;特效世界旋转" />
-        <Field Name = "Scale" Type = "Vector3" Des = "整体缩放大小" />               
+        <Field Name = "Position" Type = "Cfg.Vector3" Des = "特效结点偏移;特效世界偏移" />
+        <Field Name = "EulerAngles" Type = "Cfg.Vector3" Des = "特效结点旋转;特效世界旋转" />
+        <Field Name = "Scale" Type = "Cfg.Vector3" Des = "整体缩放大小" />               
         <Field Name = "AlignType" Type = "EffectAlignType" Des = "屏幕对齐类型" />相机屏幕位置绑定        
     </Class>
 	<Class Name = "Buff" Inherit = "PlayParticle">
@@ -187,4 +187,4 @@
         <Const Name = "Vertical" Value = "1" Des="垂直"/>
         <Const Name = "Mix" Value = "2" Des="混合"/>
     </Enum>	
-</Define>
+</Namespace>

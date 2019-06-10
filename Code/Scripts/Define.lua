@@ -1,3 +1,6 @@
+-------------------------------------------------------
+-------------------UI管理模块
+-------------------------------------------------------
 local ResourceLoadType = {
     Default = 0, -- 资源已加载, 直接取资源
     Persistent = 1 << 0, -- 永驻内存的资源
@@ -11,32 +14,37 @@ local ResourceLoadType = {
     ReturnAssetBundle = 1 << 8, -- 返回scene AssetBundle, 默认unload ab
 }
 
---手写枚举定义
-local CtrlNames = {
-    Prompt = "PromptCtrl",
-    Message = "MessageCtrl"
+---#注:未完成功能
+---#模态窗口,避免对当前窗口后面物体进行交互
+---#界面返回,至上一次界面
+---窗口定义UIShowType函数指明显示类型
+local UIShowType = {
+    Default = 1 << 0, --默认策略显示
+    ReturnType = 1 << 1, --界面可回退到上一个界面[栈结构],适用于全屏窗口
+    HideOther = 1 << 2, --显示界面且隐藏其他,适用于非全屏界面
+
+    DestroyWhenHide = 1 << 3, --Hide时释放资源,默认隐藏不销毁资源,仅在资源销毁时调用
+}
+-- UI显示层
+local UILayoutType = {
+    Backgroud = 1, -- 背景层
+    Normal = 2, -- 默认层
+    Pupop = 3,  -- 弹窗层 模态窗口只有一层
 }
 
-local PanelNames = {
-    "PromptPanel",
-    "MessagePanel",
+-------------------------------------------------------
+-------------------场景加载模块
+-------------------------------------------------------
+local LoadSceneType = {
+    LoadSceneStart = "LoadSceneStart",
+    LoadSceneEnd = "LoadSceneEnd",
 }
-
---协议类型--
-local ProtocalType = {
-    BINARY = 0,
-    PB_LUA = 1,
-    PBC = 2,
-    SPROTO = 3,
-}
---当前使用的协议类型--
-local TestProtoType = ProtocalType.BINARY;
 
 return {
     ResourceLoadType = ResourceLoadType,
-    CtrlNames,
-    PanelNames,
-    ProtocalType,
-    TestProtoType,
+    UIShowType = UIShowType,
+    UILayoutType = UILayoutType,
+
+    LoadSceneType = LoadSceneType,
 }
 

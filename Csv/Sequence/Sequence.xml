@@ -1,4 +1,4 @@
-<Define Namespace = "Sequence">
+<Namespace Name = "Cfg.Sequence">
     <!-- 序列 -->	 
 	<Class Name = "Sequence" Index = "Name" DataPath = "Sequence">  
 		<Field Name = "Name" Type = "string" Des = "序列名称" />
@@ -19,4 +19,4 @@
 
     <!-- 功能 -->
 
-</Define>
+</Namespace>

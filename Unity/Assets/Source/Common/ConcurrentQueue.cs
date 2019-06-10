@@ -5,6 +5,10 @@ using System.Text;
 
 namespace Game
 {
+    /// <summary>
+    /// 线程安全队列
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
     internal sealed class ConcurrentQueue<T>
     {
         private readonly Queue<T> _inner = new Queue<T>();

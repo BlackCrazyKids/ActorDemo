@@ -1,4 +1,4 @@
-<Define Namespace = "Ability">
+<Namespace Name = "Cfg.Ability">
     <Class Name = "Modifier">
         <Field Name = "Attributes" Value = "ModifierAttribute" Des = "修饰器特性描述" />
         <Field Name = "Duration" Value = "float" Des = "持续时间" />
@@ -43,4 +43,4 @@
         <Const Name = "MODIFIER_STATE_INVISIBLE " Value = "0" Des = "隐身状态" />
         <Const Name = "MODIFIER_STATE_INVULNERABLE " Value = "1" Des = "无敌状态 " />
     </Enum>
-</Define>
+</Namespace>

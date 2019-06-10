@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace Game
 {
-    public class PoolManager : IManager
+    public class PoolManager : Manager
     {
         public PoolManager() { }
 
@@ -13,11 +13,11 @@ namespace Game
 
         private Dictionary<string, IObjectPool> _objectPools;
 
-        public void Init()
+        public override void Init()
         {
             _objectPools = new Dictionary<string, IObjectPool>();
         }
-        public void Dispose()
+        public override void Dispose()
         {
             var iter = _objectPools.GetEnumerator();
             while (iter.MoveNext())

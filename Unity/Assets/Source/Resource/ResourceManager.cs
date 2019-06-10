@@ -1,6 +1,5 @@
 using XLua;
 using System;
-using FairyGUI;
 using System.IO;
 using UnityEngine;
 using System.Collections;
@@ -67,7 +66,7 @@ namespace Game
         public AssetBundle bundle;
     }
 
-    public partial class ResourceManager : IManager
+    public partial class ResourceManager : Manager
     {
         public ResourceManager() { }
 
@@ -115,7 +114,7 @@ namespace Game
         /// <summary>
         /// 初始化
         /// </summary>
-        public void Init()
+        public override void Init()
         {
             int memorySize = 1024 * 1024; //内存大小1GB
             if (memorySize <= 1024 * 1024)
@@ -196,8 +195,6 @@ namespace Game
             if (!IsPreLoadDone)
             {
                 AssetBundle ab = obj as AssetBundle;
-                var pkg = UIPackage.AddPackage(ab);
-                pkg.LoadAllAssets();
                 Client.Ins.StartCoroutine(AsyncUnload(ab));
             }
         }
@@ -692,7 +689,7 @@ namespace Game
         }
 
         //其他操作        
-        public void Dispose()
+        public override void Dispose()
         {
             foreach (KeyValuePair<string, Object> pair in _persistantObjects)
             {
@@ -737,7 +734,6 @@ namespace Game
             }
             _cacheObjects.Clear();
 
-            LuaWindow.Destroy();
             Debug.Log("~ResourceManager was destroy!");
         }
     }

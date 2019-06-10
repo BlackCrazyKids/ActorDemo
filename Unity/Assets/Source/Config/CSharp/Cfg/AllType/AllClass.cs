@@ -102,20 +102,17 @@ namespace Cfg.AllType
 			for (int n = data.GetInt(); n-- > 0;)
 			{
 				int k = data.GetInt();
-				float v = data.GetFloat();
-				VarDictBase[k] = v;
+				VarDictBase[k] = data.GetFloat();
 			}
 			for (int n = data.GetInt(); n-- > 0;)
 			{
 				long k = data.GetLong();
-				Cfg.AllType.CardElement v = (Cfg.AllType.CardElement)data.GetInt();
-				VarDictEnum[k] = v;
+				VarDictEnum[k] = (Cfg.AllType.CardElement)data.GetInt();
 			}
 			for (int n = data.GetInt(); n-- > 0;)
 			{
 				string k = data.GetString();
-				Cfg.AllType.SingleClass v = (Cfg.AllType.SingleClass)data.GetObject(data.GetString());
-				VarDictClass[k] = v;
+				VarDictClass[k] = (Cfg.AllType.SingleClass)data.GetObject(data.GetString());
 			}
 		}
 	}

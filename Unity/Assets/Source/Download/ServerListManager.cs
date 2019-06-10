@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace Game
 {
-    public class ServerListManager : IManager
+    public class ServerListManager : Manager
     {
         /// <summary>
         /// 各渠道App下载链接配置文件
@@ -32,8 +32,7 @@ namespace Game
         private UrlConfig _config;
         private string _serverTable;
 
-        public void Init() { }
-        public void Dispose() { _config = null; }
+        public override void Dispose() { _config = null; }
         public IEnumerator GetServerList()
         {
             string file = string.Format("{0}config/{1}", Util.DataPath, ConstSetting.UrlConfig);

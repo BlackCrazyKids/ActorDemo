@@ -300,6 +300,9 @@ Vector2.__unm = function(v)
 end
 
 Vector2.__eq = function(a,b)
+	if a == nil or b == nil then
+		return false
+	end
 	return ((a.x - b.x) ^ 2 + (a.y - b.y) ^ 2) < 9.999999e-11
 end
 

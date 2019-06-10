@@ -4,7 +4,7 @@ local Class = Class
 --定时销毁功能后续完善
 
 ---@class ObjectPool
-local ObjectPool = Class:new('ObjectPool')
+local ObjectPool = Class:new()
 
 function ObjectPool:ctor(class, maxnum, createObjectWhenPoolIsFull)
     self.class = class

@@ -48,7 +48,7 @@ namespace Game
         #endregion
 
 
-#if UNITY_EDITOR
+#if UNITY_EDITOR && !GAME_SIMULATION
         public static readonly string LuaDir          = Util.DataPath + "../../Code/Scripts";
 #else
         public static readonly string LuaDir          = Util.DataPath + "Scripts"; 

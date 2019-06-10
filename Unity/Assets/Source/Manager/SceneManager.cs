@@ -4,7 +4,7 @@ using System.Collections;
 
 namespace Game
 {
-    public class SceneManager : IManager
+    public class SceneManager : Manager
     {
         public string SceneName { get { return _sceneName; } }
         public AsyncOperation AsyncOpt { get { return _asyncOpt; } }
@@ -20,13 +20,13 @@ namespace Game
         //TODO
   
 
-        public void Init() { _asyncOpt = null; }
+        public override void Init() { _asyncOpt = null; }
         public void Release()
         {
             System.GC.Collect();
             Resources.UnloadUnusedAssets();
         }
-        public void Dispose()
+        public override void Dispose()
         {
             _sceneBundle = null;
             _asyncOpt = null;

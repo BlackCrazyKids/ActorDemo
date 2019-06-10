@@ -1,4 +1,4 @@
-<Define Namespace = "Character">
+<Namespace Name = "Cfg.Character">
 	<Enum Name="GroupType">
         <Const Name = "None" Value ="0" Alias = "临时组" Des="临时组"/>
         <Const Name = "Base" Value ="1" Alias = "基础类型" Des="基础类型"/>
@@ -16,4 +16,4 @@
 		<Field Name="BodyHeight" Type="float" Des = "碰撞体高度"/>		
 		<Field Name="ModelScale" Type="float" Des = "模型缩放"/>		
 	</Class>		
-</Define>
+</Namespace>

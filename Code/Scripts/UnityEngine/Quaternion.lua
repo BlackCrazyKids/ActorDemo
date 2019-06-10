@@ -600,7 +600,7 @@ Quaternion.__unm = function(q)
 end
 
 Quaternion.__eq = function(lhs,rhs)
-	return Quaternion.Dot(lhs, rhs) > 0.999999
+	return rhs ~= nil and lhs ~= nil and  Quaternion.Dot(lhs, rhs) > 0.999999
 end
 
 Quaternion.__tostring = function(self)

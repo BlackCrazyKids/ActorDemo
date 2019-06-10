@@ -37,7 +37,7 @@ namespace GameEditor
 
         static readonly string codeDir = Application.dataPath + "/../../Code";
         static readonly string apiDir = codeDir + "/Api";
-        static readonly string cacheDir = codeDir + "/Cache";
+        static readonly string cacheDir = codeDir + "/ApiCache";
         static readonly string winRAR = Application.dataPath + "/../../Tool/WinRAR.exe";
         static List<Info> infoList = new List<Info>();
         static Stopwatch timer = new Stopwatch();

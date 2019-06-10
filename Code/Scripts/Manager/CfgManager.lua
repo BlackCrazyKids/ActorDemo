@@ -2,7 +2,7 @@ local format = string.format
 local ipairs = ipairs
 local Stream = require("Cfg.DataStruct")
 local CSUtil = CSUtil
-local allCfgs = nil
+local allCfgs = {}
 
 local function LoadCsv(relPath, method, index)
     local path = format('%sconfig/csv/%s', CSUtil.DataPath, relPath)
@@ -17,10 +17,19 @@ local function LoadCsv(relPath, method, index)
 end
 
 local function Init()
+    --Memory.snapshot()
+    --collectgarbage("collect")
+    --Memory.m_cMethods.DumpMemorySnapshot("../", "1-Before", -1)
+    --LuaHelper.BeginSample("--LoadConfig--")
     local cfgs = require "Cfg.Config"
     for _, s in ipairs(cfgs) do
         allCfgs[s.name] = LoadCsv(s.output, s.method, s.index)
     end
+    --LuaHelper.EndSample()
+    --collectgarbage("collect")
+    --Memory.m_cMethods.DumpMemorySnapshot("../", "2-After", -1)
+    --Memory.m_cMethods.DumpMemorySnapshotComparedFile("./", "Compared", -1, "../LuaMemRefInfo-All-[1-Before].txt", "../LuaMemRefInfo-All-[2-After].txt")
+    --print("--LoadConfig--")
 end
 
 local function GetConfig(name)
